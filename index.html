@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONSISTENT</title>
+    <meta name="description" content="În curând.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .bg-words {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bg-word {
+            position: absolute;
+            font-size: clamp(14px, 3vw, 22px);
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            user-select: none;
+            animation: fadeWord var(--duration) var(--delay) infinite;
+        }
+
+        @keyframes fadeWord {
+            0%, 100% { color: rgba(255, 255, 255, 0); }
+            15%, 85% { color: rgba(255, 255, 255, 0.04); }
+            50% { color: rgba(255, 255, 255, 0.07); }
+        }
+
+        .center {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .title {
+            font-size: clamp(48px, 10vw, 120px);
+            font-weight: 900;
+            letter-spacing: 0.15em;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 0%, #666666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleIn 2s ease-out;
+        }
+
+        .subtitle {
+            margin-top: 24px;
+            font-size: clamp(14px, 2vw, 20px);
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.35);
+            animation: subtitleIn 2s 0.5s ease-out both;
+        }
+
+        .line {
+            width: 60px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+            margin: 32px auto;
+            animation: lineIn 1.5s 1s ease-out both;
+        }
+
+        @keyframes titleIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes subtitleIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes lineIn {
+            from { width: 0; opacity: 0; }
+            to { width: 60px; opacity: 1; }
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, #0a0a0a 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-words" id="bgWords"></div>
+    <div class="vignette"></div>
+
+    <div class="center">
+        <div class="title">CONSISTENT</div>
+        <div class="line"></div>
+        <div class="subtitle">ÎN CURÂND</div>
+    </div>
+
+    <script>
+        const words = [
+            'confuzie', 'rușine', 'disciplină', 'ego', 'suferință',
+            'curaj', 'onestitate', 'masculinitate', 'responsabilitate', 'adevăr',
+            'vulnerabilitate', 'consistență', 'maturitate', 'conștiință', 'alegere',
+            'singurătate', 'direcție', 'scop', 'caracter', 'integritate',
+            'sacrifice', 'reziliență', 'autenticitate', 'credință', 'putere',
+            'liniște', 'răbdare', 'hotărâre', 'identitate', 'transformare'
+        ];
+
+        const container = document.getElementById('bgWords');
+
+        words.forEach((word, i) => {
+            const el = document.createElement('div');
+            el.className = 'bg-word';
+            el.textContent = word;
+            el.style.left = Math.random() * 90 + 5 + '%';
+            el.style.top = Math.random() * 90 + 5 + '%';
+            el.style.setProperty('--duration', (8 + Math.random() * 12) + 's');
+            el.style.setProperty('--delay', (Math.random() * 10) + 's');
+            if (Math.random() > 0.5) el.style.transform = 'rotate(' + (Math.random() * 6 - 3) + 'deg)';
+            container.appendChild(el);
+        });
+    </script>
+
+</body>
+</html>
