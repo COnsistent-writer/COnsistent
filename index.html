@@ -147,6 +147,51 @@
             margin-top: 2px; margin-bottom: 2px;
         }
 
+        .bottom-bar .countdown {
+            display: flex; justify-content: center; gap: 16px;
+            margin-bottom: 10px;
+        }
+
+        .countdown .cd-block { text-align: center; }
+
+        .countdown .cd-num {
+            font-size: 22px; font-weight: 700;
+            color: rgba(212,175,105,0.45);
+            letter-spacing: 0.05em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .countdown .cd-label {
+            font-size: 8px; font-weight: 300;
+            color: rgba(255,255,255,0.15);
+            letter-spacing: 0.2em; text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .countdown .cd-sep {
+            font-size: 18px; font-weight: 200;
+            color: rgba(212,175,105,0.15);
+            align-self: flex-start; padding-top: 2px;
+        }
+
+        .bottom-bar .letter-link {
+            display: inline-block;
+            font-size: 13px; font-weight: 300;
+            color: rgba(212,175,105,0.3);
+            text-decoration: none; letter-spacing: 0.08em;
+            padding: 8px 20px;
+            border: 1px solid rgba(212,175,105,0.1);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .bottom-bar .letter-link:hover {
+            color: rgba(212,175,105,0.55);
+            border-color: rgba(212,175,105,0.25);
+            background: rgba(212,175,105,0.04);
+        }
+
         .bottom-bar .teaser {
             margin: 6px 0 8px; font-size: 13px; font-weight: 300;
             letter-spacing: 0.2em; text-transform: uppercase;
@@ -183,8 +228,12 @@
             .bottom-bar form { max-width: 280px; }
             .bottom-bar input[type="email"] { padding: 10px 12px; font-size: 12px; }
             .bottom-bar button { padding: 10px 12px; font-size: 10px; }
-            .bottom-bar .teaser { font-size: 12px; margin: 5px 0 5px; }
-            .bottom-bar .footer-line { font-size: 12px; }
+            .countdown .cd-num { font-size: 18px; }
+            .countdown .cd-sep { font-size: 14px; }
+            .countdown { gap: 10px; margin-bottom: 8px; }
+            .bottom-bar .letter-link { font-size: 12px; padding: 7px 16px; }
+            .bottom-bar .teaser { font-size: 11px; margin: 4px 0 4px; }
+            .bottom-bar .footer-line { font-size: 11px; }
             .coming { font-size: 16px; }
             .coming { font-size: 14px; }
             .bg-word { letter-spacing: 0.08em; max-width: 38vw; line-height: 1.3; }
@@ -224,9 +273,10 @@
             <button type="submit">Anunță-mă</button>
         </form>
         <div class="msg" id="formMsg"></div>
+        <div class="countdown" id="countdown"></div>
+        <a href="/scrisoare.html" class="letter-link">&#9993; Scrie-ți o scrisoare către tine din viitor</a>
         <div class="teaser">50 de capitole. Un singur adevăr.</div>
         <div class="footer-line">
-            <a href="/scrisoare.html" style="color:rgba(212,175,105,0.2);">Scrie-ți o scrisoare</a> &nbsp;&middot;&nbsp;
             &copy; 2026 CONSISTENT &nbsp;&middot;&nbsp;
             <a href="/confidentialitate.html">COnfidențialitate</a> &nbsp;&middot;&nbsp;
             <a href="mailto:contact@consistent.ro">contact@consistent.ro</a>
@@ -487,6 +537,33 @@
             bg.appendChild(el);
             animateWord(el, 8, e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100);
         });
+
+        // Countdown to 13 Sept 2027
+        const LAUNCH = new Date('2027-09-13T00:00:00');
+        const cdEl = document.getElementById('countdown');
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = LAUNCH - now;
+            if (diff <= 0) { cdEl.innerHTML = '<span style="color:rgba(212,175,105,0.5);font-size:14px;letter-spacing:0.3em;">DISPONIBILĂ</span>'; return; }
+
+            const d = Math.floor(diff / 86400000);
+            const h = Math.floor((diff % 86400000) / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+
+            cdEl.innerHTML = `
+                <div class="cd-block"><div class="cd-num">${d}</div><div class="cd-label">zile</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-block"><div class="cd-num">${String(h).padStart(2,'0')}</div><div class="cd-label">ore</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-block"><div class="cd-num">${String(m).padStart(2,'0')}</div><div class="cd-label">min</div></div>
+                <div class="cd-sep">:</div>
+                <div class="cd-block"><div class="cd-num">${String(s).padStart(2,'0')}</div><div class="cd-label">sec</div></div>
+            `;
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
 
         // Formspree
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
