@@ -66,11 +66,13 @@
         }
 
         @keyframes breathe {
-            0% { opacity: 0; transform: translate(0, 8px) scale(0.98); filter: blur(1px); }
-            12% { opacity: 1; transform: translate(var(--dx1), 0) scale(1); filter: blur(0); }
-            50% { opacity: 1; transform: translate(var(--dx2), var(--dy2)) scale(1); filter: blur(0); }
-            85% { opacity: 0.8; transform: translate(var(--dx3), var(--dy3)) scale(1); filter: blur(0); }
-            100% { opacity: 0; transform: translate(var(--dx4), -10px) scale(0.99); filter: blur(2px); }
+            0% { opacity: 0; transform: translate(0, 8px) scale(0.97); filter: blur(2px); }
+            8% { opacity: 0.6; transform: translate(var(--dx1), 2px) scale(0.99); filter: blur(0.5px); }
+            15% { opacity: 1; transform: translate(var(--dx1), 0) scale(1); filter: blur(0); }
+            60% { opacity: 1; transform: translate(var(--dx2), var(--dy2)) scale(1); filter: blur(0); }
+            80% { opacity: 0.6; transform: translate(var(--dx3), var(--dy3)) scale(1); filter: blur(0.5px); }
+            92% { opacity: 0.2; transform: translate(var(--dx4), var(--dy3)) scale(0.99); filter: blur(1px); }
+            100% { opacity: 0; transform: translate(var(--dx4), -6px) scale(0.98); filter: blur(2px); }
         }
 
         .vignette {
@@ -89,10 +91,17 @@
         .title {
             font-size: clamp(36px, 9vw, 100px); font-weight: 900;
             letter-spacing: 0.12em; line-height: 1;
-            background: linear-gradient(180deg, #ffffff 20%, #4a4a4a 100%);
+            background: linear-gradient(135deg, #d4af69 0%, #8b7355 25%, #c9b896 50%, #6b5b45 75%, #d4af69 100%);
+            background-size: 300% 300%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             opacity: 0; transform: translateY(20px);
-            animation: rise 1.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: rise 1.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards, titleShift 8s 2s ease-in-out infinite;
+        }
+
+        @keyframes titleShift {
+            0%, 100% { background-position: 0% 50%; }
+            33% { background-position: 100% 50%; }
+            66% { background-position: 50% 100%; }
         }
 
         .divider {
@@ -283,27 +292,26 @@
         };
 
         const allWords = [
-            'ridică-te', 'fă ce trebuie', 'disciplină', 'curaj', 'putere',
-            'nu mâine. azi.', 'execuție', 'hotărâre', 'determinare',
-            'masculinitate', 'onoare', 'caracter', 'integritate',
-            'responsabilitate', 'maturitate', 'autoritate interioară',
-            'adevăr', 'fără scuze', 'autenticitate', 'direcție', 'scop',
-            'transformare', 'libertate', 'evoluție', 'devino', 'crește',
-            'cât mai suporți?', 'știi ce ai de făcut', 'fă-o acum',
-            'trăiește real', 'alege durerea care construiește',
-            'nu ești victimă', 'cine ești de fapt?', 'ce vrei cu adevărat?',
-            'spune adevărul', 'renunță la mască', 'fii prezent',
-            'fii tată', 'fii lider', 'fii mentor', 'fii exemplu',
-            'mergi înainte', 'crește prin durere',
-            'construiește ceva care rămâne', 'fii constant',
-            'începe acum', 'frica e busola — mergi spre ea',
-            'cel mai greu adversar ești tu', 'caracterul se construiește în întuneric',
-            'durerea e inevitabilă, suferința e opțională',
-            'ordinea bate talentul', 'disciplina e libertate',
-            'fii genul de om pe care l-ai fi admirat la 15 ani',
-            'nu fugi de tine', 'caută adevărul chiar când doare',
-            'singurătatea aleasă e libertate', 'renunță la ce nu te crește',
-            ...Object.keys(themes) // CO- words
+            // Vague, universal — no spoilers
+            'disciplină', 'curaj', 'putere', 'hotărâre',
+            'onoare', 'caracter', 'integritate', 'scop',
+            'adevăr', 'direcție', 'libertate', 'evoluție',
+            'liniște', 'răbdare', 'credință', 'forță',
+            'prezent', 'esență', 'fundament', 'măsură',
+            'fapte', 'cuvânt', 'exemplu', 'drum',
+            // Citate vagi, general valabile
+            'ordinea bate talentul',
+            'disciplina e libertate',
+            'cel mai greu adversar ești tu',
+            'singurătatea aleasă e libertate',
+            'în liniște se nasc deciziile',
+            'ceea ce eviți te controlează',
+            'caracterul se vede în întuneric',
+            'simplitatea e forță',
+            'fă azi ce contează mâine',
+            'acțiunea vindecă frica',
+            // CO- words from chapters
+            ...Object.keys(themes)
         ];
 
         const bg = document.getElementById('bgWords');
@@ -324,7 +332,7 @@
                 const inCenter = centerCols.includes(col) && centerRows.includes(row);
                 if (!usedZones.has(key) && !inCenter) {
                     usedZones.add(key);
-                    setTimeout(() => usedZones.delete(key), 4000);
+                    setTimeout(() => usedZones.delete(key), 8000);
                     return {
                         left: Math.min(col / GRID_COLS * 82 + 5 + Math.random() * 5, 85),
                         top: Math.min(row / GRID_ROWS * 78 + 5 + Math.random() * 5, 82)
@@ -347,14 +355,14 @@
             el.style.left = pos.left + '%';
             el.style.top = pos.top + '%';
 
-            // Longer life — 6-12 seconds
-            const dur = 6 + Math.random() * 6;
+            // Long life — 10-20 seconds, plenty of time on screen
+            const dur = 10 + Math.random() * 10;
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
 
-            // Random drift direction for movement
-            const driftX = () => (Math.random() * 30 - 15) + 'px';
-            const driftY = () => (Math.random() * 20 - 10) + 'px';
+            // Random drift — words travel across the screen
+            const driftX = () => (Math.random() * 60 - 30) + 'px';
+            const driftY = () => (Math.random() * 40 - 20) + 'px';
             el.style.setProperty('--dx1', driftX());
             el.style.setProperty('--dx2', driftX());
             el.style.setProperty('--dy2', driftY());
@@ -437,10 +445,10 @@
             setTimeout(() => el.remove(), dur * 1000);
         }
 
-        const initialCount = isMobile ? 12 : 22;
-        const spawnRate = isMobile ? 600 : 450;
+        const initialCount = isMobile ? 15 : 25;
+        const spawnRate = isMobile ? 500 : 350;
 
-        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2500);
+        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2000);
         setInterval(() => spawnWord(), spawnRate);
 
         // Ripple effect (desktop only)
@@ -478,20 +486,23 @@
         }
         drawRipples();
 
-        // Click on empty space — spawn a single word there
+        // Click on empty space — spawn a word there
         document.addEventListener('click', (e) => {
             if (e.target.closest('.subscribe') || e.target.closest('.footer') || e.target.closest('a') || e.target.classList.contains('bg-word')) return;
             const el = document.createElement('div');
             el.className = 'bg-word';
-            el.textContent = words[Math.floor(Math.random() * words.length)];
+            el.textContent = allWords[Math.floor(Math.random() * allWords.length)];
             el.style.left = (e.clientX / window.innerWidth * 100) + '%';
             el.style.top = (e.clientY / window.innerHeight * 100) + '%';
-            el.style.setProperty('--dur', '4s');
+            el.style.setProperty('--dur', '8s');
             el.style.setProperty('--del', '0s');
-            el.style.setProperty('color', 'rgba(255,255,255,0.2)');
-            el.style.fontSize = '16px';
+            el.style.setProperty('--dx1', '0px'); el.style.setProperty('--dx2', (Math.random()*20-10)+'px');
+            el.style.setProperty('--dy2', (Math.random()*15-7)+'px'); el.style.setProperty('--dx3', (Math.random()*20-10)+'px');
+            el.style.setProperty('--dy3', (Math.random()*15-7)+'px'); el.style.setProperty('--dx4', '0px');
+            el.style.setProperty('color', 'rgba(255,255,255,0.18)');
+            el.style.fontSize = '15px';
             bg.appendChild(el);
-            setTimeout(() => el.remove(), 4000);
+            setTimeout(() => el.remove(), 8000);
         });
 
         // Formspree email subscribe
