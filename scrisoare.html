@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scrisoare către tine — CONSISTENT</title>
+    <meta name="description" content="Scrie-i o scrisoare bărbatului care vei fi. O vei primi când va fi momentul.">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body { width: 100%; min-height: 100vh; }
+
+        body {
+            background: #080808; color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 24px 60px;
+            -webkit-user-select: none; user-select: none;
+        }
+
+        body::after {
+            content: ''; position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 10;
+        }
+
+        .back {
+            position: fixed; top: 24px; left: 24px;
+            font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+            text-decoration: none; color: rgba(255,255,255,0.15);
+            transition: color 0.3s; z-index: 5;
+        }
+        .back:hover { color: rgba(212,175,105,0.4); }
+
+        .container {
+            max-width: 520px; width: 100%; text-align: center;
+        }
+
+        .page-title {
+            font-size: clamp(24px, 5vw, 36px); font-weight: 900;
+            letter-spacing: 0.08em; line-height: 1.2;
+            background: linear-gradient(135deg, #d4af69, #8b7355, #c9b896);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 12px;
+        }
+
+        .page-subtitle {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(14px, 2vw, 18px); font-weight: 300; font-style: italic;
+            color: rgba(255,255,255,0.35); line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        .prompt {
+            font-family: 'Crimson Pro', serif;
+            font-size: 15px; font-style: italic;
+            color: rgba(212,175,105,0.3);
+            margin-bottom: 16px; text-align: left;
+        }
+
+        .letter-box {
+            width: 100%; min-height: 220px; max-height: 400px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,105,0.1);
+            border-radius: 4px; padding: 20px;
+            color: rgba(255,255,255,0.8);
+            font-family: 'Crimson Pro', serif; font-size: 16px;
+            line-height: 1.8; resize: vertical;
+            outline: none; transition: border-color 0.3s;
+            -webkit-user-select: text; user-select: text;
+        }
+
+        .letter-box::placeholder {
+            color: rgba(255,255,255,0.12);
+            font-style: italic;
+        }
+
+        .letter-box:focus {
+            border-color: rgba(212,175,105,0.25);
+        }
+
+        .options {
+            display: flex; gap: 12px; margin: 24px 0;
+            flex-wrap: wrap; justify-content: center;
+        }
+
+        .options label {
+            font-size: 12px; font-weight: 300;
+            color: rgba(255,255,255,0.25); letter-spacing: 0.1em;
+            text-transform: uppercase; cursor: pointer;
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 3px; transition: all 0.3s;
+        }
+
+        .options input[type="radio"] { display: none; }
+        .options input[type="radio"]:checked + span {
+            color: rgba(212,175,105,0.5);
+            border-color: rgba(212,175,105,0.2);
+            background: rgba(212,175,105,0.05);
+        }
+
+        .options label:has(input:checked) {
+            border-color: rgba(212,175,105,0.2);
+            background: rgba(212,175,105,0.05);
+        }
+
+        .options label:has(input:checked) span {
+            color: rgba(212,175,105,0.5);
+        }
+
+        .email-row {
+            display: flex; gap: 0; margin: 16px 0 0;
+        }
+
+        .email-row input[type="email"] {
+            flex: 1; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,105,0.1); border-right: none;
+            border-radius: 3px 0 0 3px; padding: 11px 16px; color: #fff;
+            font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300;
+            letter-spacing: 0.03em; outline: none; min-width: 0;
+            -webkit-user-select: text; user-select: text;
+            transition: border-color 0.3s;
+        }
+
+        .email-row input::placeholder { color: rgba(255,255,255,0.15); }
+        .email-row input:focus { border-color: rgba(212,175,105,0.3); }
+
+        .email-row button {
+            background: rgba(212,175,105,0.1);
+            border: 1px solid rgba(212,175,105,0.15); border-radius: 0 3px 3px 0;
+            padding: 11px 20px; color: rgba(212,175,105,0.5);
+            font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s; white-space: nowrap;
+        }
+
+        .email-row button:hover { background: rgba(212,175,105,0.18); color: rgba(212,175,105,0.75); }
+
+        .msg {
+            margin-top: 12px; font-size: 13px; font-weight: 300;
+            color: rgba(212,175,105,0.3); min-height: 20px;
+        }
+
+        .note {
+            margin-top: 32px; font-size: 11px; font-weight: 300;
+            color: rgba(255,255,255,0.1); line-height: 1.6;
+        }
+
+        .sent-state {
+            display: none; text-align: center;
+        }
+
+        .sent-state .check {
+            font-size: 48px; margin-bottom: 20px;
+            color: rgba(212,175,105,0.4);
+        }
+
+        .sent-state h2 {
+            font-size: 22px; font-weight: 700;
+            color: rgba(255,255,255,0.6); margin-bottom: 12px;
+        }
+
+        .sent-state p {
+            font-family: 'Crimson Pro', serif;
+            font-size: 16px; font-style: italic;
+            color: rgba(255,255,255,0.25); line-height: 1.7;
+        }
+
+        @media (max-width: 480px) {
+            .letter-box { min-height: 180px; font-size: 15px; padding: 16px; }
+            .options label { font-size: 11px; padding: 7px 12px; }
+            .page-subtitle { margin-bottom: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back">&larr; CONSISTENT</a>
+
+    <div class="container" id="formState">
+        <div class="page-title">Scrisoare către tine</div>
+        <div class="page-subtitle">
+            Scrie-i bărbatului care vei fi.<br>
+            O vei primi când va fi momentul.
+        </div>
+
+        <div class="prompt">„Ce ai vrea să-i spui omului care vei fi peste..."</div>
+
+        <div class="options" id="timeOptions">
+            <label><input type="radio" name="when" value="3"><span>3 luni</span></label>
+            <label><input type="radio" name="when" value="6"><span>6 luni</span></label>
+            <label><input type="radio" name="when" value="12" checked><span>1 an</span></label>
+            <label><input type="radio" name="when" value="24"><span>2 ani</span></label>
+            <label><input type="radio" name="when" value="60"><span>5 ani</span></label>
+        </div>
+
+        <textarea class="letter-box" id="letterText" placeholder="Scrie aici. Fii sincer — te citești doar tu..."></textarea>
+
+        <div class="email-row">
+            <input type="email" id="letterEmail" placeholder="email-ul unde vei primi scrisoarea" required>
+            <button id="sendBtn">Trimite</button>
+        </div>
+
+        <div class="msg" id="letterMsg"></div>
+
+        <div class="note">
+            Scrisoarea ta este privată. Nimeni nu o va citi în afară de tine.<br>
+            O vei primi pe email la data aleasă.
+        </div>
+    </div>
+
+    <div class="container sent-state" id="sentState">
+        <div class="check">&#10003;</div>
+        <h2>Trimisă.</h2>
+        <p>
+            Scrisoarea ta așteaptă.<br>
+            Când o vei primi, vei ști cât ai crescut.<br><br>
+            <a href="/" style="color:rgba(212,175,105,0.35); text-decoration:none; font-family:Inter; font-size:12px; letter-spacing:0.15em; text-transform:uppercase;">← Înapoi la CONSISTENT</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', async () => {
+            const text = document.getElementById('letterText').value.trim();
+            const email = document.getElementById('letterEmail').value.trim();
+            const when = document.querySelector('input[name="when"]:checked')?.value;
+            const msg = document.getElementById('letterMsg');
+
+            if (!text) { msg.textContent = 'Scrie ceva. Măcar o propoziție.'; return; }
+            if (text.length < 20) { msg.textContent = 'Fii mai sincer. Scrie mai mult.'; return; }
+            if (!email || !email.includes('@')) { msg.textContent = 'Adaugă email-ul unde vei primi scrisoarea.'; return; }
+
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true; btn.textContent = '...';
+
+            // Calculate delivery date
+            const months = parseInt(when) || 12;
+            const deliveryDate = new Date();
+            deliveryDate.setMonth(deliveryDate.getMonth() + months);
+
+            try {
+                const res = await fetch('https://formspree.io/f/mjgpkwby', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        _subject: `Scrisoare către mine — livrare ${deliveryDate.toLocaleDateString('ro-RO')}`,
+                        email: email,
+                        scrisoare: text,
+                        livrare_peste: months + ' luni',
+                        data_livrare: deliveryDate.toISOString().split('T')[0],
+                        data_scrisa: new Date().toISOString().split('T')[0]
+                    })
+                });
+
+                if (res.ok) {
+                    document.getElementById('formState').style.display = 'none';
+                    document.getElementById('sentState').style.display = 'block';
+                } else {
+                    msg.textContent = 'Eroare. Încearcă din nou.';
+                }
+            } catch {
+                msg.textContent = 'Eroare de conexiune.';
+            }
+
+            btn.disabled = false; btn.textContent = 'Trimite';
+        });
+    </script>
+
+</body>
+</html>
