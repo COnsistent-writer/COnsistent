@@ -108,12 +108,27 @@
         }
 
         .coming {
-            margin-top: 40px; font-size: 12px; font-weight: 700;
-            letter-spacing: 0.35em; text-transform: uppercase;
-            color: rgba(255,255,255,0.35); opacity: 0;
+            margin-top: 32px; font-size: 11px; font-weight: 300;
+            letter-spacing: 0.5em; text-transform: uppercase;
+            color: rgba(255,255,255,0.2); opacity: 0;
             animation: fadeUp 1.5s 1.8s ease-out forwards;
-            border: 1px solid rgba(255,255,255,0.08);
-            display: inline-block; padding: 8px 24px;
+        }
+
+        /* Highlighted word pulse */
+        .bg-word.highlight {
+            animation: pulse 0.5s ease-in-out infinite alternate !important;
+            color: rgba(255,255,255,0.45) !important;
+            text-shadow: 0 0 12px rgba(255,255,255,0.1);
+            z-index: 1;
+        }
+
+        .bg-word.attracted {
+            transition: left 0.8s ease-out, top 0.8s ease-out;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.8; transform: scale(1); }
+            to { opacity: 1; transform: scale(1.08); }
         }
 
         /* Email — fixed bottom, always visible */
@@ -188,7 +203,7 @@
             .content { margin-top: -8vh; }
             .title { letter-spacing: 0.08em; }
             .tagline { font-size: 17px; padding: 0 12px; }
-            .coming { margin-top: 28px; font-size: 11px; padding: 7px 20px; }
+            .coming { margin-top: 20px; font-size: 10px; }
             .subscribe { bottom: 42px; }
             .subscribe form { max-width: 280px; }
             .subscribe input[type="email"] { padding: 10px 12px; font-size: 12px; }
@@ -272,38 +287,105 @@
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
 
+        // Grid-based placement — prevents overlap
+        const usedZones = new Set();
+        const GRID_COLS = isMobile ? 6 : 10;
+        const GRID_ROWS = isMobile ? 8 : 10;
+
+        function getOpenZone() {
+            // Avoid center zone (where title/tagline live)
+            const centerCols = isMobile ? [2,3] : [3,4,5,6];
+            const centerRows = isMobile ? [3,4] : [3,4,5,6];
+            let attempts = 0;
+            while (attempts < 30) {
+                const col = Math.floor(Math.random() * GRID_COLS);
+                const row = Math.floor(Math.random() * GRID_ROWS);
+                const key = col + ',' + row;
+                const inCenter = centerCols.includes(col) && centerRows.includes(row);
+                if (!usedZones.has(key) && !inCenter) {
+                    usedZones.add(key);
+                    setTimeout(() => usedZones.delete(key), 2500);
+                    return {
+                        left: (col / GRID_COLS * 90 + 5 + Math.random() * 4) ,
+                        top: (row / GRID_ROWS * 85 + 5 + Math.random() * 4)
+                    };
+                }
+                attempts++;
+            }
+            return null;
+        }
+
         function spawnWord() {
+            const pos = getOpenZone();
+            if (!pos) return;
+
             const word = words[Math.floor(Math.random() * words.length)];
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = word;
-
-            // Keep words away from center content on mobile
-            let left, top;
-            if (isMobile) {
-                left = 3 + Math.random() * 94;
-                top = Math.random() > 0.5 ? (Math.random() * 25) : (65 + Math.random() * 20);
-            } else {
-                left = 3 + Math.random() * 94;
-                top = 3 + Math.random() * 90;
-            }
-
-            el.style.left = left + '%';
-            el.style.top = top + '%';
+            el.style.left = pos.left + '%';
+            el.style.top = pos.top + '%';
 
             const dur = 3 + Math.random() * 5;
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
             el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.08})`);
             el.style.fontSize = (isMobile ? 10 + Math.random() * 10 : 11 + Math.random() * 16) + 'px';
+
+            // Click/tap on a word — highlight + attract others
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (el.classList.contains('highlight')) return;
+
+                el.classList.add('highlight');
+                el.style.animationPlayState = 'running';
+
+                // Attract nearby words
+                const rect = el.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+
+                // Spawn 3 new words that drift toward this one
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const child = document.createElement('div');
+                        child.className = 'bg-word attracted';
+                        child.textContent = words[Math.floor(Math.random() * words.length)];
+                        const angle = (Math.PI * 2 / 3) * i + Math.random() * 0.5;
+                        const dist = 12 + Math.random() * 8;
+                        child.style.left = (cx / window.innerWidth * 100 + Math.cos(angle) * dist) + '%';
+                        child.style.top = (cy / window.innerHeight * 100 + Math.sin(angle) * dist) + '%';
+                        child.style.setProperty('--dur', '4s');
+                        child.style.setProperty('--del', '0s');
+                        child.style.setProperty('color', `rgba(255,255,255,${0.1 + Math.random() * 0.08})`);
+                        child.style.fontSize = (11 + Math.random() * 8) + 'px';
+                        bg.appendChild(child);
+
+                        // Drift toward parent
+                        requestAnimationFrame(() => {
+                            const drift = 3 + Math.random() * 3;
+                            child.style.left = (cx / window.innerWidth * 100 + Math.cos(angle) * drift) + '%';
+                            child.style.top = (cy / window.innerHeight * 100 + Math.sin(angle) * drift) + '%';
+                        });
+
+                        setTimeout(() => child.remove(), 4000);
+                    }, i * 200);
+                }
+
+                // Remove highlight after 3s
+                setTimeout(() => {
+                    el.classList.remove('highlight');
+                }, 3000);
+            });
+
             bg.appendChild(el);
             setTimeout(() => { el.remove(); }, dur * 1000);
         }
 
-        const initialCount = isMobile ? 20 : 40;
-        const spawnRate = isMobile ? 400 : 250;
+        const initialCount = isMobile ? 15 : 30;
+        const spawnRate = isMobile ? 500 : 350;
 
-        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 1500);
+        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2000);
         setInterval(spawnWord, spawnRate);
 
         // Ripple effect (desktop only)
@@ -341,27 +423,20 @@
         }
         drawRipples();
 
-        // Click/tap spawns burst of words
+        // Click on empty space — spawn a single word there
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.subscribe') || e.target.closest('.footer') || e.target.closest('a')) return;
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    const word = words[Math.floor(Math.random() * words.length)];
-                    const el = document.createElement('div');
-                    el.className = 'bg-word';
-                    el.textContent = word;
-                    const angle = (Math.PI * 2 / 5) * i;
-                    const dist = 4 + Math.random() * 8;
-                    el.style.left = Math.min(95, Math.max(5, e.clientX / window.innerWidth * 100 + Math.cos(angle) * dist)) + '%';
-                    el.style.top = Math.min(90, Math.max(5, e.clientY / window.innerHeight * 100 + Math.sin(angle) * dist)) + '%';
-                    el.style.setProperty('--dur', (2 + Math.random() * 3) + 's');
-                    el.style.setProperty('--del', '0s');
-                    el.style.setProperty('color', `rgba(255,255,255,${0.12 + Math.random() * 0.1})`);
-                    el.style.fontSize = (14 + Math.random() * 10) + 'px';
-                    bg.appendChild(el);
-                    setTimeout(() => el.remove(), 4000);
-                }, i * 80);
-            }
+            if (e.target.closest('.subscribe') || e.target.closest('.footer') || e.target.closest('a') || e.target.classList.contains('bg-word')) return;
+            const el = document.createElement('div');
+            el.className = 'bg-word';
+            el.textContent = words[Math.floor(Math.random() * words.length)];
+            el.style.left = (e.clientX / window.innerWidth * 100) + '%';
+            el.style.top = (e.clientY / window.innerHeight * 100) + '%';
+            el.style.setProperty('--dur', '4s');
+            el.style.setProperty('--del', '0s');
+            el.style.setProperty('color', 'rgba(255,255,255,0.2)');
+            el.style.fontSize = '16px';
+            bg.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
         });
 
         // Formspree email subscribe
