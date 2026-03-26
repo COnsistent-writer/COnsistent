@@ -15,77 +15,55 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
-            --bg: #080808;
-            --text: #ffffff;
-        }
+        :root { --bg: #080808; }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+        html, body { width: 100%; height: 100%; overflow: hidden; }
 
         body {
-            background: var(--bg);
-            color: var(--text);
+            background: var(--bg); color: #fff;
             font-family: 'Inter', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             position: relative;
+            -webkit-user-select: none; user-select: none;
         }
 
-        /* Background floating words */
-        .bg-words {
-            position: fixed; inset: 0;
-            overflow: hidden; z-index: 0; pointer-events: none;
-        }
+        .bg-words { position: fixed; inset: 0; overflow: hidden; z-index: 0; }
 
         .bg-word {
-            position: absolute;
-            font-weight: 200;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            white-space: normal;
-            max-width: 45vw;
-            user-select: none;
-            line-height: 1.4;
-            animation: breathe var(--dur) var(--del) linear forwards;
-            transition: color 0.3s, transform 0.3s, text-shadow 0.3s;
-            pointer-events: all;
-            cursor: default;
+            position: absolute; font-weight: 200;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            white-space: normal; max-width: 45vw;
+            line-height: 1.4; pointer-events: all; cursor: default;
+            opacity: 0;
+            transition: color 0.4s, text-shadow 0.4s;
         }
 
         .bg-word:hover {
-            color: rgba(255, 255, 255, 0.5) !important;
-            transform: scale(1.2) !important;
-            text-shadow: 0 0 15px rgba(255,255,255,0.1);
-            animation-play-state: paused;
+            color: rgba(212,175,105,0.55) !important;
+            text-shadow: 0 0 18px rgba(212,175,105,0.12);
         }
 
-        @keyframes breathe {
-            0% { opacity: 0; transform: translate(0, 8px) scale(0.97); filter: blur(2px); }
-            8% { opacity: 0.6; transform: translate(var(--dx1), 2px) scale(0.99); filter: blur(0.5px); }
-            15% { opacity: 1; transform: translate(var(--dx1), 0) scale(1); filter: blur(0); }
-            60% { opacity: 1; transform: translate(var(--dx2), var(--dy2)) scale(1); filter: blur(0); }
-            80% { opacity: 0.6; transform: translate(var(--dx3), var(--dy3)) scale(1); filter: blur(0.5px); }
-            92% { opacity: 0.2; transform: translate(var(--dx4), var(--dy3)) scale(0.99); filter: blur(1px); }
-            100% { opacity: 0; transform: translate(var(--dx4), -6px) scale(0.98); filter: blur(2px); }
+        .bg-word.highlight {
+            animation: pulse 0.4s ease-in-out infinite alternate !important;
+            color: rgba(212,175,105,0.5) !important;
+            text-shadow: 0 0 22px rgba(212,175,105,0.18);
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.85; } to { opacity: 1; }
         }
 
         .vignette {
             position: fixed; inset: 0;
-            background: radial-gradient(ellipse at center, transparent 30%, var(--bg) 75%);
+            background: radial-gradient(ellipse at center, transparent 25%, var(--bg) 72%);
             pointer-events: none; z-index: 1;
         }
 
-        /* Main content — centered vertically with slight upward offset */
         .content {
             position: relative; z-index: 2; text-align: center;
-            padding: 0 24px;
-            margin-top: -5vh;
+            padding: 0 24px; margin-top: -4vh;
+            pointer-events: none;
         }
 
         .title {
@@ -95,7 +73,7 @@
             background-size: 300% 300%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             opacity: 0; transform: translateY(20px);
-            animation: rise 1.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards, titleShift 8s 2s ease-in-out infinite;
+            animation: rise 1.8s 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards, titleShift 10s 2s ease-in-out infinite;
         }
 
         @keyframes titleShift {
@@ -113,118 +91,88 @@
         .tagline {
             font-family: 'Crimson Pro', serif;
             font-size: clamp(16px, 2.5vw, 24px); font-weight: 400; font-style: italic;
-            color: rgba(255,255,255,0.55); letter-spacing: 0.02em; line-height: 1.7;
+            color: rgba(255,255,255,0.5); letter-spacing: 0.02em; line-height: 1.7;
             opacity: 0; animation: fadeUp 1.5s 1.3s ease-out forwards;
-            max-width: 420px; margin: 0 auto;
-            padding: 0 16px;
+            max-width: 420px; margin: 0 auto; padding: 0 16px;
         }
 
         .teaser {
             margin-top: 28px; font-size: 12px; font-weight: 300;
             letter-spacing: 0.25em; text-transform: uppercase;
-            color: rgba(212,175,105,0.25); opacity: 0;
+            color: rgba(212,175,105,0.22); opacity: 0;
             animation: fadeUp 1.5s 1.7s ease-out forwards;
         }
 
         .coming {
-            margin-top: 16px; font-size: 11px; font-weight: 300;
+            margin-top: 14px; font-size: 11px; font-weight: 300;
             letter-spacing: 0.5em; text-transform: uppercase;
-            color: rgba(255,255,255,0.15); opacity: 0;
+            color: rgba(255,255,255,0.13); opacity: 0;
             animation: fadeUp 1.5s 2s ease-out forwards;
         }
 
-        /* Highlighted word pulse */
-        .bg-word.highlight {
-            animation: pulse 0.5s ease-in-out infinite alternate !important;
-            color: rgba(212,175,105,0.5) !important;
-            text-shadow: 0 0 20px rgba(212,175,105,0.15);
-            z-index: 1;
-        }
-
-        .bg-word.attracted {
-            transition: left 0.8s ease-out, top 0.8s ease-out;
-        }
-
-        @keyframes pulse {
-            from { opacity: 0.8; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.08); }
-        }
-
-        /* Email — fixed bottom, always visible */
         .subscribe {
-            position: fixed; bottom: 50px; left: 0; right: 0;
-            z-index: 4; opacity: 0; text-align: center;
-            padding: 0 24px;
-            animation: fadeUp 1.5s 2.2s ease-out forwards;
+            position: fixed; bottom: 48px; left: 0; right: 0;
+            z-index: 4; opacity: 0; text-align: center; padding: 0 24px;
+            animation: fadeUp 1.5s 2.3s ease-out forwards;
         }
 
-        .subscribe form {
-            display: flex; gap: 0;
-            max-width: 320px; margin: 0 auto;
-        }
+        .subscribe form { display: flex; gap: 0; max-width: 320px; margin: 0 auto; }
 
         .subscribe input[type="email"] {
-            flex: 1; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); border-right: none;
+            flex: 1; background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08); border-right: none;
             border-radius: 4px 0 0 4px; padding: 10px 14px; color: #fff;
             font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300;
             letter-spacing: 0.03em; outline: none; transition: border-color 0.3s;
-            min-width: 0;
+            min-width: 0; -webkit-user-select: text; user-select: text;
         }
 
-        .subscribe input[type="email"]::placeholder { color: rgba(255,255,255,0.2); }
-        .subscribe input[type="email"]:focus { border-color: rgba(255,255,255,0.25); }
+        .subscribe input[type="email"]::placeholder { color: rgba(255,255,255,0.18); }
+        .subscribe input[type="email"]:focus { border-color: rgba(212,175,105,0.25); }
 
         .subscribe button {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 0 4px 4px 0;
-            padding: 10px 16px; color: rgba(255,255,255,0.5);
+            background: rgba(212,175,105,0.08);
+            border: 1px solid rgba(212,175,105,0.12); border-radius: 0 4px 4px 0;
+            padding: 10px 16px; color: rgba(212,175,105,0.45);
             font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
             letter-spacing: 0.1em; text-transform: uppercase;
             cursor: pointer; transition: all 0.3s; white-space: nowrap;
         }
 
-        .subscribe button:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+        .subscribe button:hover { background: rgba(212,175,105,0.14); color: rgba(212,175,105,0.7); }
 
         .subscribe .msg {
             margin-top: 8px; font-size: 12px; font-weight: 300;
-            color: rgba(255,255,255,0.3); min-height: 18px;
+            color: rgba(212,175,105,0.3); min-height: 18px;
         }
 
-        /* Footer */
         .footer {
             position: fixed; bottom: 0; left: 0; right: 0;
             z-index: 4; text-align: center; padding: 12px 16px;
-            font-size: 10px; font-weight: 300; color: rgba(255,255,255,0.1);
+            font-size: 10px; font-weight: 300; color: rgba(255,255,255,0.08);
             letter-spacing: 0.05em;
         }
 
-        .footer a {
-            color: rgba(255,255,255,0.15); text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer a:hover { color: rgba(255,255,255,0.35); }
+        .footer a { color: rgba(255,255,255,0.12); text-decoration: none; transition: color 0.3s; }
+        .footer a:hover { color: rgba(212,175,105,0.3); }
 
         @keyframes rise { to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes expandLine { from { width: 0; opacity: 0; } to { width: 50px; opacity: 1; } }
 
-        /* Grain */
         body::after {
             content: ''; position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
             pointer-events: none; z-index: 5;
         }
 
-        /* Mobile fixes */
         @media (max-width: 600px) {
-            .content { margin-top: -8vh; }
+            .content { margin-top: -6vh; }
             .title { letter-spacing: 0.08em; }
             .tagline { font-size: 17px; padding: 0 12px; }
             .teaser { font-size: 10px; margin-top: 20px; }
             .coming { margin-top: 10px; font-size: 9px; }
-            .subscribe { bottom: 42px; }
+            .subscribe { bottom: 40px; }
             .subscribe form { max-width: 280px; }
             .subscribe input[type="email"] { padding: 10px 12px; font-size: 12px; }
             .subscribe button { padding: 10px 12px; font-size: 10px; }
@@ -235,16 +183,15 @@
         @media (max-width: 360px) {
             .title { letter-spacing: 0.05em; }
             .tagline { font-size: 15px; }
-            .subscribe { bottom: 36px; }
+            .subscribe { bottom: 34px; }
             .subscribe form { max-width: 260px; }
         }
 
-        /* Landscape mobile */
         @media (max-height: 500px) {
             .content { margin-top: 0; }
             .divider { margin: 12px auto; }
-            .coming { margin-top: 16px; }
-            .subscribe { bottom: 32px; }
+            .coming { margin-top: 10px; }
+            .subscribe { bottom: 30px; }
         }
     </style>
 </head>
@@ -277,31 +224,26 @@
     </footer>
 
     <script>
-        // Themed groups — click on one, related words appear nearby
         const themes = {
-            'COnfuzie': ['pierdut între modele', 'cine sunt de fapt?', 'moartea sufletului', 'nu mai simt nimic', 'amorțeală'],
-            'COndiționare': ['programat să fii slab', 'cine ți-a ales valorile?', 'nu ești cine crezi', 'sparge tiparul', 'gândește singur'],
-            'COnștiință': ['trezește-te', 'privește-te în ochi', 'oglinda nu minte', 'fii lucid', 'ascultă liniștea'],
-            'COnfruntare': ['nu mai fugi', 'acceptă durerea', 'frica e busola', 'ce eviți te controlează', 'mergi spre disconfort'],
-            'COnsistență': ['zi de zi', 'nu perfect — consistent', 'fapte nu vorbe', 'ține-ți cuvântul', 'disciplina e libertate'],
-            'COnstruit': ['construiește zilnic', 'fiecare zi contează', 'un pas', 'lasă rezultatele să vorbească', 'termină ce ai început'],
-            'COnexiune': ['fii prezent', 'ascultă mai mult', 'protejează ce iubești', 'vulnerabilitate', 'conexiune reală'],
-            'COntrol': ['stăpânire de sine', 'lasă ego-ul', 'fii ancorat în valori', 'nu reacționa — răspunde', 'liniștea interioară'],
-            'COraj': ['curaj', 'fii incomod', 'spune adevărul', 'nu cere permisiune', 'acționează acum'],
-            'COpil interior': ['vindecă rana', 'iartă-te', 'reconstrucție', 'renaștere', 'acceptă-ți povestea'],
+            'COnfuzie': ['pierdut între modele', 'moartea sufletului', 'amorțeală'],
+            'COndiționare': ['sparge tiparul', 'gândește singur', 'cine ți-a ales valorile?'],
+            'COnștiință': ['trezește-te', 'oglinda nu minte', 'ascultă liniștea'],
+            'COnfruntare': ['nu mai fugi', 'acceptă durerea', 'mergi spre disconfort'],
+            'COnsistență': ['zi de zi', 'fapte nu vorbe', 'ține-ți cuvântul'],
+            'COnstruit': ['construiește zilnic', 'fiecare zi contează', 'termină ce ai început'],
+            'COnexiune': ['fii prezent', 'ascultă mai mult', 'conexiune reală'],
+            'COntrol': ['stăpânire de sine', 'lasă ego-ul', 'liniștea interioară'],
+            'COraj': ['curaj', 'fii incomod', 'acționează acum'],
+            'COpil interior': ['vindecă rana', 'iartă-te', 'acceptă-ți povestea'],
         };
 
         const allWords = [
-            // Forță & acțiune
             'ridică-te', 'fă ce trebuie', 'disciplină', 'curaj', 'putere',
             'nu mâine. azi.', 'execuție', 'hotărâre', 'determinare',
-            // Masculinitate & caracter
             'masculinitate', 'onoare', 'caracter', 'integritate',
             'responsabilitate', 'maturitate', 'autoritate interioară',
-            // Adevăr & claritate
             'adevăr', 'fără scuze', 'autenticitate', 'direcție', 'scop',
             'transformare', 'libertate', 'evoluție', 'devino', 'crește',
-            // Provocare
             'cât mai suporți?', 'știi ce ai de făcut', 'fă-o acum',
             'trăiește real', 'alege durerea care construiește',
             'nu ești victimă', 'cine ești de fapt?', 'ce vrei cu adevărat?',
@@ -316,49 +258,78 @@
             'fii genul de om pe care l-ai fi admirat la 15 ani',
             'nu fugi de tine', 'caută adevărul chiar când doare',
             'singurătatea aleasă e libertate', 'renunță la ce nu te crește',
-            // Extra vagi, universal valabile
-            'liniște', 'răbdare', 'credință', 'forță',
-            'esență', 'fundament', 'drum', 'prezent',
-            'în liniște se nasc deciziile',
-            'ceea ce eviți te controlează',
-            'simplitatea e forță',
-            'acțiunea vindecă frica',
-            'fă azi ce contează mâine',
-            // CO- words from chapters
+            'liniște', 'răbdare', 'credință', 'forță', 'esență', 'fundament',
+            'în liniște se nasc deciziile', 'ceea ce eviți te controlează',
+            'simplitatea e forță', 'acțiunea vindecă frica',
             ...Object.keys(themes)
         ];
 
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
-
         const usedZones = new Set();
-        const GRID_COLS = isMobile ? 5 : 8;
-        const GRID_ROWS = isMobile ? 7 : 8;
+        const COLS = isMobile ? 5 : 8;
+        const ROWS = isMobile ? 7 : 8;
+        const centerCols = isMobile ? [1,2,3] : [2,3,4,5];
+        const centerRows = isMobile ? [2,3,4] : [2,3,4,5];
 
-        function getOpenZone() {
-            const centerCols = isMobile ? [1,2,3] : [2,3,4,5];
-            const centerRows = isMobile ? [2,3,4] : [2,3,4,5];
-            let attempts = 0;
-            while (attempts < 40) {
-                const col = Math.floor(Math.random() * GRID_COLS);
-                const row = Math.floor(Math.random() * GRID_ROWS);
-                const key = col + ',' + row;
-                const inCenter = centerCols.includes(col) && centerRows.includes(row);
-                if (!usedZones.has(key) && !inCenter) {
-                    usedZones.add(key);
-                    setTimeout(() => usedZones.delete(key), 8000);
+        function getZone() {
+            for (let a = 0; a < 50; a++) {
+                const c = Math.floor(Math.random() * COLS);
+                const r = Math.floor(Math.random() * ROWS);
+                const k = c+','+r;
+                if (!usedZones.has(k) && !(centerCols.includes(c) && centerRows.includes(r))) {
+                    usedZones.add(k);
+                    setTimeout(() => usedZones.delete(k), 6000);
                     return {
-                        left: Math.min(col / GRID_COLS * 82 + 5 + Math.random() * 5, 85),
-                        top: Math.min(row / GRID_ROWS * 78 + 5 + Math.random() * 5, 82)
+                        left: Math.min(c / COLS * 82 + 5 + Math.random() * 6, 84),
+                        top: Math.min(r / ROWS * 76 + 5 + Math.random() * 6, 80)
                     };
                 }
-                attempts++;
             }
             return null;
         }
 
-        function spawnWord(forceWord) {
-            const pos = getOpenZone();
+        // Smooth JS animation instead of CSS keyframes — full control
+        function animateWord(el, dur, startX, startY) {
+            const dx = (Math.random() - 0.5) * 80;
+            const dy = (Math.random() - 0.5) * 50;
+            const start = performance.now();
+
+            function frame(now) {
+                const t = Math.min((now - start) / (dur * 1000), 1);
+
+                // Smooth fade: in 0-15%, visible 15-75%, fade 75-100%
+                let opacity;
+                if (t < 0.1) opacity = t / 0.1;
+                else if (t < 0.7) opacity = 1;
+                else opacity = 1 - ((t - 0.7) / 0.3);
+
+                // Blur on edges
+                const blur = t < 0.08 ? (1 - t/0.08) * 2 : t > 0.85 ? ((t-0.85)/0.15) * 2.5 : 0;
+
+                // Drift
+                const x = startX + dx * t;
+                const y = startY + dy * t;
+
+                el.style.opacity = opacity;
+                el.style.filter = blur > 0.1 ? `blur(${blur}px)` : 'none';
+                el.style.left = x + '%';
+                el.style.top = y + '%';
+
+                if (t < 1 && el.parentNode) {
+                    requestAnimationFrame(frame);
+                } else {
+                    // Graceful remove with final fade
+                    el.style.transition = 'opacity 0.5s';
+                    el.style.opacity = 0;
+                    setTimeout(() => el.remove(), 500);
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+
+        function spawn(forceWord) {
+            const pos = getZone();
             if (!pos) return;
 
             const word = forceWord || allWords[Math.floor(Math.random() * allWords.length)];
@@ -366,43 +337,25 @@
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = word;
-            el.style.left = pos.left + '%';
-            el.style.top = pos.top + '%';
-
-            // Long life — 10-20 seconds, plenty of time on screen
-            const dur = 10 + Math.random() * 10;
-            el.style.setProperty('--dur', dur + 's');
-            el.style.setProperty('--del', '0s');
-
-            // Random drift — words travel across the screen
-            const driftX = () => (Math.random() * 60 - 30) + 'px';
-            const driftY = () => (Math.random() * 40 - 20) + 'px';
-            el.style.setProperty('--dx1', driftX());
-            el.style.setProperty('--dx2', driftX());
-            el.style.setProperty('--dy2', driftY());
-            el.style.setProperty('--dx3', driftX());
-            el.style.setProperty('--dy3', driftY());
-            el.style.setProperty('--dx4', driftX());
 
             const len = word.length;
             let size;
             if (isCO) {
-                // CO- words — bigger, amber tint, bolder
-                size = isMobile ? 14 + Math.random() * 4 : 17 + Math.random() * 8;
-                el.style.setProperty('color', `rgba(212,175,105,${0.12 + Math.random() * 0.08})`);
+                size = isMobile ? 14 + Math.random() * 3 : 17 + Math.random() * 7;
+                el.style.color = `rgba(212,175,105,${0.12 + Math.random() * 0.08})`;
                 el.style.fontWeight = '700';
                 el.style.letterSpacing = '0.2em';
             } else if (isMobile) {
-                size = len > 25 ? 9 + Math.random() * 2 : len > 12 ? 10 + Math.random() * 3 : 11 + Math.random() * 6;
-                el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.07})`);
+                size = len > 25 ? 9 : len > 12 ? 10 + Math.random() * 2 : 11 + Math.random() * 5;
+                el.style.color = `rgba(255,255,255,${0.07 + Math.random() * 0.07})`;
             } else {
-                size = len > 25 ? 11 + Math.random() * 3 : len > 12 ? 12 + Math.random() * 5 : 13 + Math.random() * 12;
-                el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.07})`);
+                size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 10;
+                el.style.color = `rgba(255,255,255,${0.07 + Math.random() * 0.07})`;
             }
             el.style.fontSize = size + 'px';
             if (isMobile) el.style.maxWidth = '40vw';
 
-            // Click — highlight 3s + spawn 2 RELATED words
+            // Click — highlight 3s, spawn 2 related
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (el.classList.contains('highlight')) return;
@@ -412,142 +365,108 @@
                 const cx = rect.left + rect.width / 2;
                 const cy = rect.top + rect.height / 2;
 
-                // Find related words
                 let related;
                 if (themes[word]) {
                     related = themes[word];
                 } else {
-                    // Find which theme this word belongs to
-                    const parentTheme = Object.entries(themes).find(([k, v]) => v.includes(word));
-                    related = parentTheme ? [parentTheme[0], ...parentTheme[1].filter(w => w !== word)] : null;
+                    const parent = Object.entries(themes).find(([k, v]) => v.includes(word));
+                    related = parent ? [parent[0], ...parent[1].filter(w => w !== word)] : null;
                 }
-
                 if (!related) {
-                    // Fallback: pick from same approximate category
                     const idx = allWords.indexOf(word);
-                    related = allWords.slice(Math.max(0, idx - 3), idx + 4).filter(w => w !== word);
+                    related = allWords.slice(Math.max(0, idx - 2), idx + 3).filter(w => w !== word);
                 }
 
-                // Spawn 2 related words nearby
                 const picked = related.sort(() => Math.random() - 0.5).slice(0, 2);
                 picked.forEach((rw, i) => {
                     setTimeout(() => {
                         const child = document.createElement('div');
-                        child.className = 'bg-word attracted';
+                        child.className = 'bg-word';
                         child.textContent = rw;
-                        const angle = (Math.PI * 2 / 2) * i + Math.random() * 0.8;
-                        const dist = 6 + Math.random() * 5;
-                        child.style.left = Math.min(90, Math.max(5, cx / window.innerWidth * 100 + Math.cos(angle) * dist)) + '%';
-                        child.style.top = Math.min(85, Math.max(5, cy / window.innerHeight * 100 + Math.sin(angle) * dist)) + '%';
-                        child.style.setProperty('--dur', '5s');
-                        child.style.setProperty('--del', '0s');
-                        child.style.setProperty('--dx1', '0px'); child.style.setProperty('--dx2', (Math.random()*10-5)+'px');
-                        child.style.setProperty('--dy2', (Math.random()*8-4)+'px'); child.style.setProperty('--dx3', (Math.random()*10-5)+'px');
-                        child.style.setProperty('--dy3', (Math.random()*8-4)+'px'); child.style.setProperty('--dx4', '0px');
-                        child.style.setProperty('color', `rgba(255,255,255,${0.12 + Math.random() * 0.08})`);
-                        child.style.fontSize = (isMobile ? 11 : 13) + Math.random() * 5 + 'px';
+                        child.style.color = `rgba(212,175,105,${0.14 + Math.random() * 0.08})`;
+                        child.style.fontSize = (isMobile ? 11 : 13) + Math.random() * 4 + 'px';
                         if (isMobile) child.style.maxWidth = '40vw';
+
+                        const angle = (Math.PI * 2 / 2) * i + Math.random() * 0.6;
+                        const dist = 5 + Math.random() * 4;
+                        const sx = Math.min(88, Math.max(5, cx / window.innerWidth * 100 + Math.cos(angle) * dist));
+                        const sy = Math.min(82, Math.max(5, cy / window.innerHeight * 100 + Math.sin(angle) * dist));
+
                         bg.appendChild(child);
-                        setTimeout(() => child.remove(), 5000);
-                    }, i * 300);
+                        animateWord(child, 6 + Math.random() * 4, sx, sy);
+                    }, i * 400);
                 });
 
                 setTimeout(() => el.classList.remove('highlight'), 3000);
             });
 
             bg.appendChild(el);
-            setTimeout(() => el.remove(), dur * 1000);
+            const dur = 12 + Math.random() * 10;
+            animateWord(el, dur, pos.left, pos.top);
         }
 
-        const initialCount = isMobile ? 15 : 25;
-        const spawnRate = isMobile ? 500 : 350;
+        // Initial spawn
+        for (let i = 0; i < (isMobile ? 14 : 24); i++) setTimeout(spawn, Math.random() * 2500);
+        setInterval(spawn, isMobile ? 500 : 350);
 
-        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2000);
-        setInterval(() => spawnWord(), spawnRate);
-
-        // Ripple effect (desktop only)
+        // Ripple (desktop only)
         const canvas = document.getElementById('ripple');
         const ctx = canvas.getContext('2d');
         let ripples = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
         if (!isMobile) {
             document.addEventListener('mousemove', (e) => {
-                ripples.push({ x: e.clientX, y: e.clientY, r: 0, alpha: 0.06 });
-                if (ripples.length > 6) ripples.shift();
+                ripples.push({ x: e.clientX, y: e.clientY, r: 0, a: 0.05 });
+                if (ripples.length > 5) ripples.shift();
             });
         }
 
-        function drawRipples() {
+        (function drawRipples() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ripples = ripples.filter(rip => rip.alpha > 0.001);
-            ripples.forEach(rip => {
-                rip.r += 1.5;
-                rip.alpha *= 0.97;
+            ripples = ripples.filter(r => r.a > 0.001);
+            ripples.forEach(r => {
+                r.r += 1.2; r.a *= 0.97;
                 ctx.beginPath();
-                ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(255,255,255,${rip.alpha})`;
+                ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(212,175,105,${r.a})`;
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
             });
             requestAnimationFrame(drawRipples);
-        }
-        drawRipples();
+        })();
 
-        // Click on empty space — spawn a word there
+        // Click empty space
         document.addEventListener('click', (e) => {
             if (e.target.closest('.subscribe') || e.target.closest('.footer') || e.target.closest('a') || e.target.classList.contains('bg-word')) return;
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = allWords[Math.floor(Math.random() * allWords.length)];
-            el.style.left = (e.clientX / window.innerWidth * 100) + '%';
-            el.style.top = (e.clientY / window.innerHeight * 100) + '%';
-            el.style.setProperty('--dur', '8s');
-            el.style.setProperty('--del', '0s');
-            el.style.setProperty('--dx1', '0px'); el.style.setProperty('--dx2', (Math.random()*20-10)+'px');
-            el.style.setProperty('--dy2', (Math.random()*15-7)+'px'); el.style.setProperty('--dx3', (Math.random()*20-10)+'px');
-            el.style.setProperty('--dy3', (Math.random()*15-7)+'px'); el.style.setProperty('--dx4', '0px');
-            el.style.setProperty('color', 'rgba(255,255,255,0.18)');
-            el.style.fontSize = '15px';
+            el.style.color = 'rgba(255,255,255,0.16)';
+            el.style.fontSize = '14px';
             bg.appendChild(el);
-            setTimeout(() => el.remove(), 8000);
+            animateWord(el, 8, e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100);
         });
 
-        // Formspree email subscribe
+        // Formspree
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('emailInput').value;
             const msg = document.getElementById('formMsg');
             const btn = this.querySelector('button');
-
-            btn.disabled = true;
-            btn.textContent = '...';
-
+            btn.disabled = true; btn.textContent = '...';
             try {
                 const res = await fetch('https://formspree.io/f/mjgpkwby', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    body: JSON.stringify({ email })
                 });
-
-                if (res.ok) {
-                    msg.textContent = 'Mulțumim. Te anunțăm.';
-                    document.getElementById('emailInput').value = '';
-                } else {
-                    msg.textContent = 'Eroare. Încearcă din nou.';
-                }
-            } catch {
-                msg.textContent = 'Eroare de conexiune.';
-            }
-
-            btn.disabled = false;
-            btn.textContent = 'Anunță-mă';
+                msg.textContent = res.ok ? 'Mulțumim. Te anunțăm.' : 'Eroare. Încearcă din nou.';
+                if (res.ok) document.getElementById('emailInput').value = '';
+            } catch { msg.textContent = 'Eroare de conexiune.'; }
+            btn.disabled = false; btn.textContent = 'Anunță-mă';
             setTimeout(() => { msg.textContent = ''; }, 5000);
         });
     </script>
