@@ -126,12 +126,12 @@
             animation: fadeUp 1.5s 2s ease-out forwards;
         }
 
-        .bottom-bar form {
+        #subscribeForm {
             display: flex; gap: 0;
             max-width: 340px; margin: 0 auto;
         }
 
-        .bottom-bar input[type="email"] {
+        #subscribeForm input[type="email"] {
             flex: 1; background: rgba(255,255,255,0.03);
             border: 1px solid rgba(212,175,105,0.1); border-right: none;
             border-radius: 3px 0 0 3px; padding: 11px 16px; color: #fff;
@@ -140,10 +140,10 @@
             min-width: 0; -webkit-user-select: text; user-select: text;
         }
 
-        .bottom-bar input[type="email"]::placeholder { color: rgba(255,255,255,0.15); }
-        .bottom-bar input[type="email"]:focus { border-color: rgba(212,175,105,0.3); }
+        #subscribeForm input[type="email"]::placeholder { color: rgba(255,255,255,0.15); }
+        #subscribeForm input[type="email"]:focus { border-color: rgba(212,175,105,0.3); }
 
-        .bottom-bar button {
+        #subscribeForm button {
             background: rgba(212,175,105,0.08);
             border: 1px solid rgba(212,175,105,0.12); border-radius: 0 3px 3px 0;
             padding: 11px 18px; color: rgba(212,175,105,0.45);
@@ -152,12 +152,12 @@
             cursor: pointer; transition: all 0.3s; white-space: nowrap;
         }
 
-        .bottom-bar button:hover { background: rgba(212,175,105,0.16); color: rgba(212,175,105,0.75); }
+        #subscribeForm button:hover { background: rgba(212,175,105,0.16); color: rgba(212,175,105,0.75); }
 
-        .bottom-bar .msg {
+        #formMsg {
             font-size: 11px; font-weight: 300;
             color: rgba(212,175,105,0.25); min-height: 14px;
-            margin-top: 2px; margin-bottom: 2px;
+            margin-top: 2px; margin-bottom: 2px; text-align: center;
         }
 
         .bottom-bar .countdown {
@@ -261,9 +261,9 @@
             .tagline { font-size: 18px; padding: 0 12px; }
             .coming { margin-top: 10px; font-size: 14px; }
             .bottom-bar { padding: 28px 16px 10px; }
-            .bottom-bar form { max-width: 280px; }
-            .bottom-bar input[type="email"] { padding: 10px 12px; font-size: 12px; }
-            .bottom-bar button { padding: 10px 12px; font-size: 10px; }
+            #subscribeForm { max-width: 280px; }
+            #subscribeForm input[type="email"] { padding: 10px 12px; font-size: 12px; }
+            #subscribeForm button { padding: 10px 12px; font-size: 10px; }
             .countdown .cd-num { font-size: 18px; }
             .countdown .cd-sep { font-size: 14px; }
             .countdown { gap: 10px; margin-bottom: 8px; }
@@ -279,7 +279,7 @@
             .title { letter-spacing: 0.05em; }
             .tagline { font-size: 15px; }
             .bottom-bar { padding: 24px 12px 8px; }
-            .bottom-bar form { max-width: 260px; }
+            #subscribeForm { max-width: 260px; }
         }
 
         @media (max-height: 500px) {
@@ -301,15 +301,14 @@
         <div class="divider"></div>
         <div class="coming">În curând</div>
         <div class="tagline">Cartea de care ai nevoie,<br>nu cea pe care o vrei.</div>
-        <!-- email moved to footer -->
-    </div>
-
-    <div class="bottom-bar">
-        <form id="subscribeForm">
+        <form id="subscribeForm" style="pointer-events:all; display:flex; gap:0; max-width:340px; margin:16px auto 0;">
             <input type="email" id="emailInput" name="email" placeholder="adresa ta de email" required>
             <button type="submit">Anunță-mă</button>
         </form>
-        <div class="msg" id="formMsg"></div>
+        <div class="msg" id="formMsg" style="pointer-events:all;"></div>
+    </div>
+
+    <div class="bottom-bar">
         <div class="countdown" id="countdown"></div>
         <a href="/scrisoare.html" class="letter-link">&#9993; Scrie-ți o scrisoare către tine din viitor</a>
         <div class="teaser">50 de capitole. Un singur adevăr.</div>
