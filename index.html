@@ -92,6 +92,19 @@
             max-width: 440px; margin: 12px auto 0; padding: 0 16px;
         }
 
+        .center-email {
+            margin-top: 10px; opacity: 0;
+            animation: fadeUp 1.5s 1.5s ease-out forwards;
+        }
+
+        .center-email a {
+            font-size: 11px; font-weight: 300;
+            letter-spacing: 0.15em; color: rgba(255,255,255,0.15);
+            text-decoration: none; transition: color 0.3s;
+        }
+
+        .center-email a:hover { color: rgba(212,175,105,0.4); }
+
         .coming {
             margin-top: 16px; font-size: clamp(18px, 3vw, 26px); font-weight: 300;
             letter-spacing: 0.35em; text-transform: uppercase;
@@ -288,6 +301,7 @@
         <div class="divider"></div>
         <div class="coming">În curând</div>
         <div class="tagline">Cartea de care ai nevoie,<br>nu cea pe care o vrei.</div>
+        <div class="center-email"><a href="mailto:contact@consistent.ro">contact@consistent.ro</a></div>
     </div>
 
     <div class="bottom-bar">
@@ -321,8 +335,7 @@
         </div>
         <div class="footer-line">
             &copy; 2026 CONSISTENT &nbsp;&middot;&nbsp;
-            <a href="/confidentialitate.html">COnfidențialitate</a> &nbsp;&middot;&nbsp;
-            <a href="mailto:contact@consistent.ro">contact@consistent.ro</a>
+            <a href="/confidentialitate.html">COnfidențialitate</a>
         </div>
     </div>
 
@@ -377,13 +390,22 @@
             'nu e cartea care te face să te simți bine. e cea care te face să fii bine.',
             'confortul te-a distrus. asta e antidotul.',
             'un singur om stă între tine și viața pe care o vrei. ești tu.',
-            // Golden phrase — spawns rarely
-            'adevărul pe care îl eviți te definește',
             ...Object.keys(themes)
         ];
 
-        // Spawn golden phrase every ~30 seconds
-        setInterval(() => spawn('adevărul pe care îl eviți te definește'), 30000);
+        // Golden phrases — rare, special styling, rotate
+        const goldenPhrases = [
+            'adevărul pe care îl eviți te definește',
+            'bărbatul pe care-l prefaci că ești îl ucide pe cel care ai putea deveni',
+            'nu e cartea care te face să te simți bine. e cea care te face să fii bine.',
+            'un singur om stă între tine și viața pe care o vrei. ești tu.',
+            'confortul te-a distrus. asta e antidotul.'
+        ];
+        let goldenIdx = 0;
+        setInterval(() => {
+            spawn(goldenPhrases[goldenIdx % goldenPhrases.length]);
+            goldenIdx++;
+        }, 45000);
 
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
@@ -473,8 +495,8 @@
                 size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 10;
                 el.style.color = `rgba(255,255,255,${0.07 + Math.random() * 0.07})`;
             }
-            // Special golden phrase — rare, unmissable
-            const isGolden = word === 'adevărul pe care îl eviți te definește';
+            // Special golden phrases — rare, unmissable
+            const isGolden = goldenPhrases.includes(word);
             if (isGolden) {
                 size = isMobile ? 15 : 20;
                 el.style.color = 'rgba(212,175,105,0.35)';
