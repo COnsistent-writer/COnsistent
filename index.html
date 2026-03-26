@@ -57,8 +57,10 @@
         }
 
         @keyframes breathe {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
+            0% { opacity: 0; transform: translateY(8px) scale(0.97); filter: blur(2px); }
+            20% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            80% { opacity: 1; transform: translateY(-4px) scale(1.01); filter: blur(0); }
+            100% { opacity: 0; transform: translateY(-12px) scale(0.98); filter: blur(3px); }
         }
 
         /* Vignette overlay */
@@ -254,19 +256,35 @@
         ];
 
         const bg = document.getElementById('bgWords');
-        words.forEach(word => {
+
+        function spawnWord() {
+            const word = words[Math.floor(Math.random() * words.length)];
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = word;
             el.style.left = (5 + Math.random() * 88) + '%';
             el.style.top = (5 + Math.random() * 88) + '%';
-            el.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
-            el.style.setProperty('--del', (-Math.random() * 15) + 's');
-            el.style.opacity = 0;
-            el.style.setProperty('color', `rgba(255,255,255,${0.03 + Math.random() * 0.04})`);
-            if (Math.random() > 0.6) el.style.transform = `rotate(${(Math.random() * 4 - 2).toFixed(1)}deg)`;
+
+            const dur = 6 + Math.random() * 10;
+            el.style.setProperty('--dur', dur + 's');
+            el.style.setProperty('--del', '0s');
+            el.style.setProperty('color', `rgba(255,255,255,${0.04 + Math.random() * 0.06})`);
+
+            if (Math.random() > 0.5) {
+                el.style.fontSize = (12 + Math.random() * 14) + 'px';
+            }
+
             bg.appendChild(el);
-        });
+            setTimeout(() => { el.remove(); }, dur * 1000);
+        }
+
+        // Initial burst
+        for (let i = 0; i < 15; i++) {
+            setTimeout(spawnWord, Math.random() * 3000);
+        }
+
+        // Continuous spawning
+        setInterval(spawnWord, 800 + Math.random() * 600);
 
         // Simple form handler — stores emails in localStorage for now
         // Replace with real backend later
