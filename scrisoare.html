@@ -82,34 +82,106 @@
             border-color: rgba(212,175,105,0.25);
         }
 
-        .options {
-            display: flex; gap: 12px; margin: 24px 0;
-            flex-wrap: wrap; justify-content: center;
+        .picker-wrap {
+            margin: 24px 0; display: flex;
+            justify-content: center; gap: 6px;
+            align-items: center;
         }
 
-        .options label {
-            font-size: 12px; font-weight: 300;
-            color: rgba(255,255,255,0.25); letter-spacing: 0.1em;
+        .scroll-col {
+            position: relative; height: 140px; width: 70px;
+            overflow: hidden;
+            border: 1px solid rgba(212,175,105,0.1);
+            border-radius: 6px;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .scroll-col.wide { width: 52px; }
+        .scroll-col.narrow { width: 44px; }
+
+        .scroll-col::before, .scroll-col::after {
+            content: ''; position: absolute; left: 0; right: 0;
+            height: 45px; z-index: 2; pointer-events: none;
+        }
+        .scroll-col::before {
+            top: 0;
+            background: linear-gradient(180deg, #080808 10%, transparent 100%);
+        }
+        .scroll-col::after {
+            bottom: 0;
+            background: linear-gradient(0deg, #080808 10%, transparent 100%);
+        }
+
+        .scroll-highlight {
+            position: absolute; top: 50%; left: 4px; right: 4px;
+            height: 34px; transform: translateY(-50%);
+            border: 1px solid rgba(212,175,105,0.15);
+            border-radius: 4px;
+            background: rgba(212,175,105,0.04);
+            pointer-events: none; z-index: 1;
+        }
+
+        .scroll-inner {
+            position: absolute; top: 0; left: 0; right: 0;
+            padding: 53px 0;
+            overflow-y: scroll;
+            height: 100%;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .scroll-inner::-webkit-scrollbar { display: none; }
+
+        .scroll-item {
+            height: 34px; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 300;
+            color: rgba(255,255,255,0.2);
+            scroll-snap-align: center;
+            transition: color 0.2s, transform 0.2s;
+            cursor: default;
+        }
+
+        .scroll-item.active {
+            color: rgba(212,175,105,0.6);
+            font-weight: 400;
+            transform: scale(1.1);
+        }
+
+        .picker-sep {
+            font-size: 18px; font-weight: 300;
+            color: rgba(212,175,105,0.2);
+            margin: 0 2px;
+        }
+
+        .picker-label {
+            font-size: 10px; font-weight: 300;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: rgba(255,255,255,0.12);
+            text-align: center; margin-top: 6px;
+        }
+
+        .picker-group { text-align: center; }
+
+        .quick-btns {
+            display: flex; gap: 8px; justify-content: center;
+            margin-bottom: 16px; flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            font-size: 10px; font-weight: 300;
+            color: rgba(255,255,255,0.2); letter-spacing: 0.08em;
             text-transform: uppercase; cursor: pointer;
-            padding: 8px 16px;
-            border: 1px solid rgba(255,255,255,0.06);
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 3px; transition: all 0.3s;
+            background: none; font-family: 'Inter', sans-serif;
         }
 
-        .options input[type="radio"] { display: none; }
-        .options input[type="radio"]:checked + span {
-            color: rgba(212,175,105,0.5);
-            border-color: rgba(212,175,105,0.2);
-            background: rgba(212,175,105,0.05);
-        }
-
-        .options label:has(input:checked) {
-            border-color: rgba(212,175,105,0.2);
-            background: rgba(212,175,105,0.05);
-        }
-
-        .options label:has(input:checked) span {
-            color: rgba(212,175,105,0.5);
+        .quick-btn:hover {
+            border-color: rgba(212,175,105,0.15);
+            color: rgba(212,175,105,0.4);
         }
 
         .email-row {
@@ -190,12 +262,52 @@
 
         <div class="prompt">„Ce ai vrea să-i spui omului care vei fi peste..."</div>
 
-        <div class="options" id="timeOptions">
-            <label><input type="radio" name="when" value="3"><span>3 luni</span></label>
-            <label><input type="radio" name="when" value="6"><span>6 luni</span></label>
-            <label><input type="radio" name="when" value="12" checked><span>1 an</span></label>
-            <label><input type="radio" name="when" value="24"><span>2 ani</span></label>
-            <label><input type="radio" name="when" value="60"><span>5 ani</span></label>
+        <div class="quick-btns">
+            <button class="quick-btn" data-months="3">3 luni</button>
+            <button class="quick-btn" data-months="6">6 luni</button>
+            <button class="quick-btn" data-months="12">1 an</button>
+            <button class="quick-btn" data-months="24">2 ani</button>
+            <button class="quick-btn" data-months="60">5 ani</button>
+        </div>
+
+        <div class="picker-wrap">
+            <div class="picker-group">
+                <div class="scroll-col wide" id="dayCol">
+                    <div class="scroll-highlight"></div>
+                    <div class="scroll-inner" id="dayScroll"></div>
+                </div>
+                <div class="picker-label">zi</div>
+            </div>
+            <div class="picker-group">
+                <div class="scroll-col" style="width:90px;" id="monthCol">
+                    <div class="scroll-highlight"></div>
+                    <div class="scroll-inner" id="monthScroll"></div>
+                </div>
+                <div class="picker-label">luna</div>
+            </div>
+            <div class="picker-group">
+                <div class="scroll-col wide" id="yearCol">
+                    <div class="scroll-highlight"></div>
+                    <div class="scroll-inner" id="yearScroll"></div>
+                </div>
+                <div class="picker-label">an</div>
+            </div>
+            <div class="picker-sep">&middot;</div>
+            <div class="picker-group">
+                <div class="scroll-col narrow" id="hourCol">
+                    <div class="scroll-highlight"></div>
+                    <div class="scroll-inner" id="hourScroll"></div>
+                </div>
+                <div class="picker-label">ora</div>
+            </div>
+            <div class="picker-sep">:</div>
+            <div class="picker-group">
+                <div class="scroll-col narrow" id="minCol">
+                    <div class="scroll-highlight"></div>
+                    <div class="scroll-inner" id="minScroll"></div>
+                </div>
+                <div class="picker-label">min</div>
+            </div>
         </div>
 
         <textarea class="letter-box" id="letterText" placeholder="Scrie aici. Fii sincer — te citești doar tu..."></textarea>
@@ -224,34 +336,136 @@
     </div>
 
     <script>
+        const months_ro = ['Ian','Feb','Mar','Apr','Mai','Iun','Iul','Aug','Sep','Oct','Nov','Dec'];
+        const now = new Date();
+        const ITEM_H = 34;
+
+        function populateScroll(container, items, startIdx) {
+            container.innerHTML = '';
+            items.forEach((item, i) => {
+                const div = document.createElement('div');
+                div.className = 'scroll-item';
+                div.textContent = item;
+                div.dataset.idx = i;
+                container.appendChild(div);
+            });
+            // Scroll to start position
+            setTimeout(() => {
+                container.scrollTop = startIdx * ITEM_H;
+                updateActive(container);
+            }, 50);
+        }
+
+        function updateActive(container) {
+            const items = container.querySelectorAll('.scroll-item');
+            const center = container.scrollTop + container.clientHeight / 2 - 53;
+            items.forEach(item => {
+                const itemCenter = item.offsetTop - 53 + ITEM_H / 2;
+                const dist = Math.abs(center - itemCenter);
+                if (dist < ITEM_H / 2) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function getSelected(container) {
+            const active = container.querySelector('.scroll-item.active');
+            return active ? parseInt(active.dataset.idx) : 0;
+        }
+
+        function snapScroll(container) {
+            const idx = Math.round(container.scrollTop / ITEM_H);
+            container.scrollTo({ top: idx * ITEM_H, behavior: 'smooth' });
+            setTimeout(() => updateActive(container), 150);
+        }
+
+        // Build day, month, year, hour, minute columns
+        const dayScroll = document.getElementById('dayScroll');
+        const monthScroll = document.getElementById('monthScroll');
+        const yearScroll = document.getElementById('yearScroll');
+        const hourScroll = document.getElementById('hourScroll');
+        const minScroll = document.getElementById('minScroll');
+
+        const days = Array.from({length: 31}, (_, i) => String(i + 1).padStart(2, '0'));
+        const years = Array.from({length: 11}, (_, i) => String(now.getFullYear() + i));
+        const hours = Array.from({length: 24}, (_, i) => String(i).padStart(2, '0'));
+        const mins = Array.from({length: 12}, (_, i) => String(i * 5).padStart(2, '0'));
+
+        // Default: 1 year from now, 8:00
+        const defDate = new Date(now);
+        defDate.setFullYear(defDate.getFullYear() + 1);
+
+        populateScroll(dayScroll, days, defDate.getDate() - 1);
+        populateScroll(monthScroll, months_ro, defDate.getMonth());
+        populateScroll(yearScroll, years, 1);
+        populateScroll(hourScroll, hours, 8);
+        populateScroll(minScroll, mins, 0);
+
+        // Scroll listeners
+        [dayScroll, monthScroll, yearScroll, hourScroll, minScroll].forEach(el => {
+            let scrollTimer;
+            el.addEventListener('scroll', () => {
+                updateActive(el);
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(() => snapScroll(el), 80);
+            });
+        });
+
+        // Quick buttons
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const m = parseInt(btn.dataset.months);
+                const target = new Date(now);
+                target.setMonth(target.getMonth() + m);
+                dayScroll.scrollTo({ top: (target.getDate() - 1) * ITEM_H, behavior: 'smooth' });
+                monthScroll.scrollTo({ top: target.getMonth() * ITEM_H, behavior: 'smooth' });
+                const yearIdx = target.getFullYear() - now.getFullYear();
+                yearScroll.scrollTo({ top: yearIdx * ITEM_H, behavior: 'smooth' });
+                setTimeout(() => {
+                    [dayScroll, monthScroll, yearScroll].forEach(updateActive);
+                }, 300);
+            });
+        });
+
+        function getPickerDate() {
+            const day = getSelected(dayScroll) + 1;
+            const month = getSelected(monthScroll);
+            const yearIdx = getSelected(yearScroll);
+            const year = now.getFullYear() + yearIdx;
+            const hour = getSelected(hourScroll);
+            const min = getSelected(minScroll) * 5;
+            return new Date(year, month, day, hour, min);
+        }
+
+        // Send
         document.getElementById('sendBtn').addEventListener('click', async () => {
             const text = document.getElementById('letterText').value.trim();
             const email = document.getElementById('letterEmail').value.trim();
-            const when = document.querySelector('input[name="when"]:checked')?.value;
             const msg = document.getElementById('letterMsg');
+            const deliveryDate = getPickerDate();
 
+            if (deliveryDate <= new Date()) { msg.textContent = 'Alege o dată din viitor.'; return; }
             if (!text) { msg.textContent = 'Scrie ceva. Măcar o propoziție.'; return; }
             if (text.length < 20) { msg.textContent = 'Fii mai sincer. Scrie mai mult.'; return; }
-            if (!email || !email.includes('@')) { msg.textContent = 'Adaugă email-ul unde vei primi scrisoarea.'; return; }
+            if (!email || !email.includes('@')) { msg.textContent = 'Adaugă email-ul tău.'; return; }
 
             const btn = document.getElementById('sendBtn');
             btn.disabled = true; btn.textContent = '...';
 
-            // Calculate delivery date
-            const months = parseInt(when) || 12;
-            const deliveryDate = new Date();
-            deliveryDate.setMonth(deliveryDate.getMonth() + months);
+            const dateStr = deliveryDate.toLocaleDateString('ro-RO', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
 
             try {
                 const res = await fetch('https://formspree.io/f/mjgpkwby', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
-                        _subject: `Scrisoare către mine — livrare ${deliveryDate.toLocaleDateString('ro-RO')}`,
+                        _subject: 'Scrisoare către mine — ' + dateStr,
                         email: email,
                         scrisoare: text,
-                        livrare_peste: months + ' luni',
-                        data_livrare: deliveryDate.toISOString().split('T')[0],
+                        data_livrare: dateStr,
+                        data_livrare_iso: deliveryDate.toISOString(),
                         data_scrisa: new Date().toISOString().split('T')[0]
                     })
                 });
