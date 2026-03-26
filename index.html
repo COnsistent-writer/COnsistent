@@ -198,7 +198,21 @@
             'fiecare zi contează', 'devino', 'crește', 'evoluție',
             // Provocare
             'cât mai suporți?', 'știi ce ai de făcut', 'fă-o acum',
-            'nu mai fugi', 'confruntă-te', 'trăiește real'
+            'nu mai fugi', 'confruntă-te', 'trăiește real',
+            // Și mai multe
+            'tăcerea te distruge', 'alege durerea care construiește',
+            'nu ești victimă', 'oprește-te din fugă', 'privește-te în ochi',
+            'merită suferința?', 'cine ești de fapt?', 'ce vrei cu adevărat?',
+            'fii incomod', 'spune adevărul', 'renunță la mască',
+            'acceptă durerea', 'fii prezent', 'nu mai amâna',
+            'ține-ți cuvântul', 'fii om de cuvânt', 'construiește zilnic',
+            'fii tată', 'fii lider', 'fii mentor', 'fii exemplu',
+            'trezește-te', 'luptă pentru tine', 'mergi înainte',
+            'nu cere permisiune', 'asumă-ți greșelile', 'crește prin durere',
+            'fii prezent acolo unde contează', 'lasă ego-ul', 'ascultă mai mult',
+            'protejează ce iubești', 'construiește ceva care rămâne',
+            'fii constant', 'nu perfect — consistent', 'zi de zi',
+            'un pas', 'începe acum', 'termină ce ai început'
         ];
 
         const bg = document.getElementById('bgWords');
@@ -213,14 +227,14 @@
             const dur = 3 + Math.random() * 5;
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
-            el.style.setProperty('color', `rgba(255,255,255,${0.04 + Math.random() * 0.07})`);
+            el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.08})`);
             el.style.fontSize = (11 + Math.random() * 16) + 'px';
             bg.appendChild(el);
             setTimeout(() => { el.remove(); }, dur * 1000);
         }
 
-        for (let i = 0; i < 25; i++) setTimeout(spawnWord, Math.random() * 2000);
-        setInterval(spawnWord, 350 + Math.random() * 300);
+        for (let i = 0; i < 40; i++) setTimeout(spawnWord, Math.random() * 1500);
+        setInterval(spawnWord, 200 + Math.random() * 200);
 
         // Email subscribe — sends to Formspree (emails arrive at contact@consistent.ro)
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
