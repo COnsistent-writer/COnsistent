@@ -209,7 +209,7 @@
         <div class="title">CONSISTENT</div>
         <div class="divider"></div>
         <div class="coming">În curând</div>
-        <div class="tagline">Cartea pe care nimeni nu ți-o dă,<br>dar pe care o cauți de ani.</div>
+        <div class="tagline">Cartea de care ai nevoie,<br>nu cea pe care o vrei.</div>
     </div>
 
     <div class="bottom-bar">
@@ -264,8 +264,26 @@
             'liniște', 'răbdare', 'credință', 'forță', 'esență', 'fundament',
             'în liniște se nasc deciziile', 'ceea ce eviți te controlează',
             'simplitatea e forță', 'acțiunea vindecă frica',
+            // Taglines selectate
+            'cartea pe care ți-o datorezi',
+            'cartea pe care ai amânat-o toată viața',
+            'bărbatul pe care-l prefaci că ești îl ucide pe cel care ai putea deveni',
+            'nu mai minți. nu mai fugi. nu mai ai timp.',
+            'motivația moare. disciplina nu.',
+            'fă ce trebuie sau rămâi cine ești',
+            'oprește-te. privește-te. începe.',
+            'ce s-ar întâmpla dacă ai înceta să te minți?',
+            'cartea pe care n-ai vrea s-o citești, dar trebuie',
+            'nu e cartea care te face să te simți bine. e cea care te face să fii bine.',
+            'confortul te-a distrus. asta e antidotul.',
+            'un singur om stă între tine și viața pe care o vrei. ești tu.',
+            // Golden phrase — spawns rarely
+            'adevărul pe care îl eviți te definește',
             ...Object.keys(themes)
         ];
+
+        // Spawn golden phrase every ~30 seconds
+        setInterval(() => spawn('adevărul pe care îl eviți te definește'), 30000);
 
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
@@ -355,6 +373,16 @@
                 size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 10;
                 el.style.color = `rgba(255,255,255,${0.07 + Math.random() * 0.07})`;
             }
+            // Special golden phrase — rare, unmissable
+            const isGolden = word === 'adevărul pe care îl eviți te definește';
+            if (isGolden) {
+                size = isMobile ? 15 : 20;
+                el.style.color = 'rgba(212,175,105,0.35)';
+                el.style.fontWeight = '700';
+                el.style.letterSpacing = '0.18em';
+                el.style.textShadow = '0 0 30px rgba(212,175,105,0.08)';
+            }
+
             el.style.fontSize = size + 'px';
             if (isMobile) el.style.maxWidth = '40vw';
 
