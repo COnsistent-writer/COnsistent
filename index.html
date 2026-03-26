@@ -86,17 +86,22 @@
 
         .tagline {
             font-family: 'Crimson Pro', serif;
-            font-size: clamp(15px, 2.2vw, 21px); font-weight: 400; font-style: italic;
-            color: rgba(255,255,255,0.4); letter-spacing: 0.02em; line-height: 1.7;
+            font-size: clamp(17px, 2.8vw, 24px); font-weight: 400;
+            color: rgba(255,255,255,0.5); letter-spacing: 0.02em; line-height: 1.7;
             opacity: 0; animation: fadeUp 1.5s 1.2s ease-out forwards;
-            max-width: 400px; margin: 10px auto 0; padding: 0 16px;
+            max-width: 440px; margin: 12px auto 0; padding: 0 16px;
         }
 
         .coming {
-            margin-top: 14px; font-size: clamp(16px, 2.5vw, 22px); font-weight: 300;
+            margin-top: 16px; font-size: clamp(18px, 3vw, 26px); font-weight: 300;
             letter-spacing: 0.35em; text-transform: uppercase;
-            color: rgba(212,175,105,0.35); opacity: 0;
-            animation: fadeUp 1.5s 0.8s ease-out forwards;
+            color: rgba(212,175,105,0.45); opacity: 0;
+            animation: fadeUp 1.5s 0.8s ease-out forwards, breatheText 3s 2.5s ease-in-out infinite;
+        }
+
+        @keyframes breatheText {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.06); opacity: 0.7; }
         }
 
         .bottom-bar {
@@ -143,21 +148,21 @@
         }
 
         .bottom-bar .teaser {
-            margin: 6px 0 6px; font-size: 12px; font-weight: 300;
-            letter-spacing: 0.25em; text-transform: uppercase;
-            color: rgba(212,175,105,0.22);
+            margin: 6px 0 8px; font-size: 13px; font-weight: 300;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(212,175,105,0.3);
         }
 
         .bottom-bar .footer-line {
-            font-size: 12px; font-weight: 300;
-            color: rgba(255,255,255,0.14); letter-spacing: 0.04em;
+            font-size: 13px; font-weight: 300;
+            color: rgba(255,255,255,0.2); letter-spacing: 0.04em;
         }
 
         .bottom-bar .footer-line a {
-            color: rgba(255,255,255,0.16); text-decoration: none; transition: color 0.3s;
+            color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.3s;
         }
 
-        .bottom-bar .footer-line a:hover { color: rgba(212,175,105,0.35); }
+        .bottom-bar .footer-line a:hover { color: rgba(212,175,105,0.5); }
 
         @keyframes rise { to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
@@ -172,14 +177,15 @@
         @media (max-width: 600px) {
             .content { margin-top: -6vh; }
             .title { letter-spacing: 0.08em; }
-            .tagline { font-size: 17px; padding: 0 12px; }
+            .tagline { font-size: 18px; padding: 0 12px; }
             .coming { margin-top: 10px; font-size: 14px; }
             .bottom-bar { padding: 28px 16px 10px; }
             .bottom-bar form { max-width: 280px; }
             .bottom-bar input[type="email"] { padding: 10px 12px; font-size: 12px; }
             .bottom-bar button { padding: 10px 12px; font-size: 10px; }
-            .bottom-bar .teaser { font-size: 10px; margin: 6px 0 6px; }
-            .bottom-bar .footer-line { font-size: 10px; }
+            .bottom-bar .teaser { font-size: 12px; margin: 5px 0 5px; }
+            .bottom-bar .footer-line { font-size: 12px; }
+            .coming { font-size: 16px; }
             .coming { font-size: 14px; }
             .bg-word { letter-spacing: 0.08em; max-width: 38vw; line-height: 1.3; }
         }
