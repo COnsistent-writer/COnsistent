@@ -97,7 +97,7 @@
 
         .divider {
             width: 50px; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            background: linear-gradient(90deg, transparent, rgba(212,175,105,0.3), transparent);
             margin: 24px auto; opacity: 0; animation: expandLine 1.2s 1s ease-out forwards;
         }
 
@@ -110,18 +110,25 @@
             padding: 0 16px;
         }
 
+        .teaser {
+            margin-top: 28px; font-size: 12px; font-weight: 300;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: rgba(212,175,105,0.25); opacity: 0;
+            animation: fadeUp 1.5s 1.7s ease-out forwards;
+        }
+
         .coming {
-            margin-top: 32px; font-size: 11px; font-weight: 300;
+            margin-top: 16px; font-size: 11px; font-weight: 300;
             letter-spacing: 0.5em; text-transform: uppercase;
-            color: rgba(255,255,255,0.2); opacity: 0;
-            animation: fadeUp 1.5s 1.8s ease-out forwards;
+            color: rgba(255,255,255,0.15); opacity: 0;
+            animation: fadeUp 1.5s 2s ease-out forwards;
         }
 
         /* Highlighted word pulse */
         .bg-word.highlight {
             animation: pulse 0.5s ease-in-out infinite alternate !important;
-            color: rgba(255,255,255,0.45) !important;
-            text-shadow: 0 0 12px rgba(255,255,255,0.1);
+            color: rgba(212,175,105,0.5) !important;
+            text-shadow: 0 0 20px rgba(212,175,105,0.15);
             z-index: 1;
         }
 
@@ -206,7 +213,8 @@
             .content { margin-top: -8vh; }
             .title { letter-spacing: 0.08em; }
             .tagline { font-size: 17px; padding: 0 12px; }
-            .coming { margin-top: 20px; font-size: 10px; }
+            .teaser { font-size: 10px; margin-top: 20px; }
+            .coming { margin-top: 10px; font-size: 9px; }
             .subscribe { bottom: 42px; }
             .subscribe form { max-width: 280px; }
             .subscribe input[type="email"] { padding: 10px 12px; font-size: 12px; }
@@ -241,7 +249,8 @@
         <div class="title">CONSISTENT</div>
         <div class="divider"></div>
         <div class="tagline">Cartea pe care nimeni nu ți-o dă,<br>dar pe care o cauți de ani.</div>
-        <div class="coming">In curând</div>
+        <div class="teaser">50 de capitole. Un singur adevăr.</div>
+        <div class="coming">În curând</div>
     </div>
 
     <div class="subscribe">
@@ -356,10 +365,11 @@
             const len = word.length;
             let size;
             if (isCO) {
-                // CO- words slightly bigger and brighter
-                size = isMobile ? 13 + Math.random() * 4 : 16 + Math.random() * 8;
-                el.style.setProperty('color', `rgba(255,255,255,${0.10 + Math.random() * 0.06})`);
-                el.style.fontWeight = '300';
+                // CO- words — bigger, amber tint, bolder
+                size = isMobile ? 14 + Math.random() * 4 : 17 + Math.random() * 8;
+                el.style.setProperty('color', `rgba(212,175,105,${0.12 + Math.random() * 0.08})`);
+                el.style.fontWeight = '700';
+                el.style.letterSpacing = '0.2em';
             } else if (isMobile) {
                 size = len > 25 ? 9 + Math.random() * 2 : len > 12 ? 10 + Math.random() * 3 : 11 + Math.random() * 6;
                 el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.07})`);
