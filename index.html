@@ -4,105 +4,222 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONSISTENT</title>
-    <meta name="description" content="În curând.">
+    <meta name="description" content="O carte despre bărbatul care alege să nu mai mintă. În curând.">
+    <meta property="og:title" content="CONSISTENT">
+    <meta property="og:description" content="O carte despre bărbatul care alege să nu mai mintă. În curând.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://consistent.ro">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>C</text></svg>">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #080808;
+            --text: #ffffff;
+            --dim: rgba(255, 255, 255, 0.30);
+            --ghost: rgba(255, 255, 255, 0.05);
+        }
 
         body {
-            background: #0a0a0a;
-            color: #fff;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
         }
 
+        /* Background floating words */
         .bg-words {
-            position: absolute;
+            position: fixed;
             inset: 0;
             overflow: hidden;
             z-index: 0;
+            pointer-events: none;
         }
 
         .bg-word {
             position: absolute;
-            font-size: clamp(14px, 3vw, 22px);
-            font-weight: 300;
+            font-size: clamp(12px, 2.5vw, 18px);
+            font-weight: 200;
             color: rgba(255, 255, 255, 0);
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
             white-space: nowrap;
             user-select: none;
-            animation: fadeWord var(--duration) var(--delay) infinite;
+            animation: breathe var(--dur) var(--del) infinite ease-in-out;
         }
 
-        @keyframes fadeWord {
-            0%, 100% { color: rgba(255, 255, 255, 0); }
-            15%, 85% { color: rgba(255, 255, 255, 0.04); }
-            50% { color: rgba(255, 255, 255, 0.07); }
+        @keyframes breathe {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
-        .center {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
-        .title {
-            font-size: clamp(48px, 10vw, 120px);
-            font-weight: 900;
-            letter-spacing: 0.15em;
-            line-height: 1;
-            background: linear-gradient(180deg, #ffffff 0%, #666666 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titleIn 2s ease-out;
-        }
-
-        .subtitle {
-            margin-top: 24px;
-            font-size: clamp(14px, 2vw, 20px);
-            font-weight: 300;
-            letter-spacing: 0.4em;
-            color: rgba(255, 255, 255, 0.35);
-            animation: subtitleIn 2s 0.5s ease-out both;
-        }
-
-        .line {
-            width: 60px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.15);
-            margin: 32px auto;
-            animation: lineIn 1.5s 1s ease-out both;
-        }
-
-        @keyframes titleIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes subtitleIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes lineIn {
-            from { width: 0; opacity: 0; }
-            to { width: 60px; opacity: 1; }
-        }
-
+        /* Vignette overlay */
         .vignette {
             position: fixed;
             inset: 0;
-            background: radial-gradient(ellipse at center, transparent 40%, #0a0a0a 100%);
+            background: radial-gradient(ellipse at center, transparent 30%, var(--bg) 75%);
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
+        }
+
+        /* Main content */
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px 24px;
+            max-width: 600px;
+        }
+
+        .title {
+            font-size: clamp(42px, 9vw, 100px);
+            font-weight: 900;
+            letter-spacing: 0.12em;
+            line-height: 1;
+            background: linear-gradient(180deg, #ffffff 20%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: rise 1.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+            margin: 28px auto;
+            opacity: 0;
+            animation: expandLine 1.2s 1s ease-out forwards;
+        }
+
+        .tagline {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(15px, 2.2vw, 19px);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--dim);
+            letter-spacing: 0.02em;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeUp 1.5s 1.3s ease-out forwards;
+        }
+
+        .coming {
+            margin-top: 48px;
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.18);
+            opacity: 0;
+            animation: fadeUp 1.5s 1.8s ease-out forwards;
+        }
+
+        /* Email subscribe */
+        .subscribe {
+            margin-top: 36px;
+            opacity: 0;
+            animation: fadeUp 1.5s 2.2s ease-out forwards;
+        }
+
+        .subscribe form {
+            display: flex;
+            gap: 0;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .subscribe input[type="email"] {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 300;
+            letter-spacing: 0.03em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .subscribe input[type="email"]::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .subscribe input[type="email"]:focus {
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .subscribe button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 4px 4px 0;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .subscribe button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .subscribe .msg {
+            margin-top: 12px;
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            min-height: 18px;
+        }
+
+        /* Animations */
+        @keyframes rise {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes expandLine {
+            from { width: 0; opacity: 0; }
+            to { width: 40px; opacity: 1; }
+        }
+
+        /* Subtle grain texture */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        @media (max-width: 480px) {
+            .subscribe form { flex-direction: column; gap: 8px; }
+            .subscribe input[type="email"] { border-radius: 4px; border-right: 1px solid rgba(255,255,255,0.1); }
+            .subscribe button { border-radius: 4px; }
         }
     </style>
 </head>
@@ -111,34 +228,66 @@
     <div class="bg-words" id="bgWords"></div>
     <div class="vignette"></div>
 
-    <div class="center">
+    <div class="content">
         <div class="title">CONSISTENT</div>
-        <div class="line"></div>
-        <div class="subtitle">ÎN CURÂND</div>
+        <div class="divider"></div>
+        <div class="tagline">Cartea pe care nimeni nu ți-o dă,<br>dar pe care o cauți de ani.</div>
+        <div class="coming">In curând</div>
+        <div class="subscribe">
+            <form id="subscribeForm">
+                <input type="email" id="emailInput" placeholder="adresa ta de email" required>
+                <button type="submit">Anunță-mă</button>
+            </form>
+            <div class="msg" id="formMsg"></div>
+        </div>
     </div>
 
     <script>
         const words = [
             'confuzie', 'rușine', 'disciplină', 'ego', 'suferință',
-            'curaj', 'onestitate', 'masculinitate', 'responsabilitate', 'adevăr',
-            'vulnerabilitate', 'consistență', 'maturitate', 'conștiință', 'alegere',
+            'curaj', 'onestitate', 'masculinitate', 'responsabilitate',
+            'vulnerabilitate', 'consistență', 'maturitate', 'conștiință',
             'singurătate', 'direcție', 'scop', 'caracter', 'integritate',
-            'sacrifice', 'reziliență', 'autenticitate', 'credință', 'putere',
-            'liniște', 'răbdare', 'hotărâre', 'identitate', 'transformare'
+            'autenticitate', 'credință', 'putere', 'adevăr', 'alegere',
+            'liniște', 'răbdare', 'hotărâre', 'identitate', 'transformare',
+            'reziliență', 'sacrifice', 'libertate'
         ];
 
-        const container = document.getElementById('bgWords');
-
-        words.forEach((word, i) => {
+        const bg = document.getElementById('bgWords');
+        words.forEach(word => {
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = word;
-            el.style.left = Math.random() * 90 + 5 + '%';
-            el.style.top = Math.random() * 90 + 5 + '%';
-            el.style.setProperty('--duration', (8 + Math.random() * 12) + 's');
-            el.style.setProperty('--delay', (Math.random() * 10) + 's');
-            if (Math.random() > 0.5) el.style.transform = 'rotate(' + (Math.random() * 6 - 3) + 'deg)';
-            container.appendChild(el);
+            el.style.left = (5 + Math.random() * 88) + '%';
+            el.style.top = (5 + Math.random() * 88) + '%';
+            el.style.setProperty('--dur', (10 + Math.random() * 15) + 's');
+            el.style.setProperty('--del', (-Math.random() * 15) + 's');
+            el.style.opacity = 0;
+            el.style.setProperty('color', `rgba(255,255,255,${0.03 + Math.random() * 0.04})`);
+            if (Math.random() > 0.6) el.style.transform = `rotate(${(Math.random() * 4 - 2).toFixed(1)}deg)`;
+            bg.appendChild(el);
+        });
+
+        // Simple form handler — stores emails in localStorage for now
+        // Replace with real backend later
+        document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            const msg = document.getElementById('formMsg');
+
+            // Store locally until backend is ready
+            const emails = JSON.parse(localStorage.getItem('consistent_emails') || '[]');
+            if (emails.includes(email)) {
+                msg.textContent = 'Ești deja pe listă.';
+                return;
+            }
+            emails.push(email);
+            localStorage.setItem('consistent_emails', JSON.stringify(emails));
+
+            msg.textContent = 'Mulțumim. Te anunțăm.';
+            document.getElementById('emailInput').value = '';
+
+            setTimeout(() => { msg.textContent = ''; }, 4000);
         });
     </script>
 
