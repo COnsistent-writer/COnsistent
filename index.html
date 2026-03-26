@@ -66,10 +66,11 @@
         }
 
         @keyframes breathe {
-            0% { opacity: 0; transform: translateY(6px) scale(0.98); filter: blur(1px); }
-            15% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-            75% { opacity: 1; transform: translateY(-3px) scale(1); filter: blur(0); }
-            100% { opacity: 0; transform: translateY(-8px) scale(0.99); filter: blur(2px); }
+            0% { opacity: 0; transform: translate(0, 8px) scale(0.98); filter: blur(1px); }
+            12% { opacity: 1; transform: translate(var(--dx1), 0) scale(1); filter: blur(0); }
+            50% { opacity: 1; transform: translate(var(--dx2), var(--dy2)) scale(1); filter: blur(0); }
+            85% { opacity: 0.8; transform: translate(var(--dx3), var(--dy3)) scale(1); filter: blur(0); }
+            100% { opacity: 0; transform: translate(var(--dx4), -10px) scale(0.99); filter: blur(2px); }
         }
 
         .vignette {
@@ -258,102 +259,66 @@
     </footer>
 
     <script>
-        const words = [
-            // Forță & acțiune
+        // Themed groups — click on one, related words appear nearby
+        const themes = {
+            'COnfuzie': ['pierdut între modele', 'cine sunt de fapt?', 'moartea sufletului', 'nu mai simt nimic', 'amorțeală'],
+            'COndiționare': ['programat să fii slab', 'cine ți-a ales valorile?', 'nu ești cine crezi', 'sparge tiparul', 'gândește singur'],
+            'COnștiință': ['trezește-te', 'privește-te în ochi', 'oglinda nu minte', 'fii lucid', 'ascultă liniștea'],
+            'COnfruntare': ['nu mai fugi', 'acceptă durerea', 'frica e busola', 'ce eviți te controlează', 'mergi spre disconfort'],
+            'COnsistență': ['zi de zi', 'nu perfect — consistent', 'fapte nu vorbe', 'ține-ți cuvântul', 'disciplina e libertate'],
+            'COnstruit': ['construiește zilnic', 'fiecare zi contează', 'un pas', 'lasă rezultatele să vorbească', 'termină ce ai început'],
+            'COnexiune': ['fii prezent', 'ascultă mai mult', 'protejează ce iubești', 'vulnerabilitate', 'conexiune reală'],
+            'COntrol': ['stăpânire de sine', 'lasă ego-ul', 'fii ancorat în valori', 'nu reacționa — răspunde', 'liniștea interioară'],
+            'COraj': ['curaj', 'fii incomod', 'spune adevărul', 'nu cere permisiune', 'acționează acum'],
+            'COpil interior': ['vindecă rana', 'iartă-te', 'reconstrucție', 'renaștere', 'acceptă-ți povestea'],
+        };
+
+        const allWords = [
             'ridică-te', 'fă ce trebuie', 'disciplină', 'curaj', 'putere',
-            'consistență', 'fapte nu vorbe', 'acțiune', 'rezistență', 'hotărâre',
-            'nu mâine. azi.', 'execuție', 'persistență', 'determinare',
-            // Masculinitate & caracter
-            'masculinitate', 'onoare', 'caracter', 'integritate', 'coloană vertebrală',
-            'fii de neclintit', 'responsabilitate', 'stăpânire de sine', 'bărbat',
-            'maturitate', 'respect câștigat', 'autoritate interioară',
-            // Adevăr & claritate
-            'adevăr', 'fără scuze', 'oglinda', 'luciditate', 'autenticitate',
-            'nu te mai minți', 'confruntare', 'alegere', 'direcție', 'scop',
-            // Transformare
-            'transformare', 'reconstrucție', 'libertate', 'renaștere',
-            'fiecare zi contează', 'devino', 'crește', 'evoluție',
-            // Provocare
+            'nu mâine. azi.', 'execuție', 'hotărâre', 'determinare',
+            'masculinitate', 'onoare', 'caracter', 'integritate',
+            'responsabilitate', 'maturitate', 'autoritate interioară',
+            'adevăr', 'fără scuze', 'autenticitate', 'direcție', 'scop',
+            'transformare', 'libertate', 'evoluție', 'devino', 'crește',
             'cât mai suporți?', 'știi ce ai de făcut', 'fă-o acum',
-            'nu mai fugi', 'confruntă-te', 'trăiește real',
-            'tăcerea te distruge', 'alege durerea care construiește',
-            'nu ești victimă', 'oprește-te din fugă', 'privește-te în ochi',
-            'merită suferința?', 'cine ești de fapt?', 'ce vrei cu adevărat?',
-            'fii incomod', 'spune adevărul', 'renunță la mască',
-            'acceptă durerea', 'fii prezent', 'nu mai amâna',
-            'ține-ți cuvântul', 'fii om de cuvânt', 'construiește zilnic',
+            'trăiește real', 'alege durerea care construiește',
+            'nu ești victimă', 'cine ești de fapt?', 'ce vrei cu adevărat?',
+            'spune adevărul', 'renunță la mască', 'fii prezent',
             'fii tată', 'fii lider', 'fii mentor', 'fii exemplu',
-            'trezește-te', 'luptă pentru tine', 'mergi înainte',
-            'nu cere permisiune', 'asumă-ți greșelile', 'crește prin durere',
-            'fii prezent acolo unde contează', 'lasă ego-ul', 'ascultă mai mult',
-            'protejează ce iubești', 'construiește ceva care rămâne',
-            'fii constant', 'nu perfect — consistent', 'zi de zi',
-            'un pas', 'începe acum', 'termină ce ai început',
-            // Citate celebre & idei
-            'suferința acceptată transformă',
-            'cine nu-și asumă nimic nu devine nimic',
-            'ordinea bate talentul',
-            'fă azi ce alții nu vor face',
-            'frica e busola — mergi spre ea',
-            'nu căuta confort, caută sens',
-            'cel mai greu adversar ești tu',
-            'tăcerea unui bărbat vorbește',
-            'caracterul se construiește în întuneric',
-            'ai grijă ce tolerezi — înveți oamenii cum să te trateze',
+            'mergi înainte', 'crește prin durere',
+            'construiește ceva care rămâne', 'fii constant',
+            'începe acum', 'frica e busola — mergi spre ea',
+            'cel mai greu adversar ești tu', 'caracterul se construiește în întuneric',
             'durerea e inevitabilă, suferința e opțională',
-            'fii omul pe care îl cauți',
-            'nu conta pe motivație, contează pe obișnuință',
-            'respectul se câștigă, nu se cere',
-            'un om fără scop e un om pierdut',
-            'vorbele conving, exemplul atrage',
-            'ceea ce nu te confruntă nu te schimbă',
-            'nu fugi de tine — e singurul loc unde trebuie să ajungi',
-            'disciplina e libertate',
-            'cuvântul dat e contract cu tine însuți',
-            'lasă rezultatele să vorbească',
-            'greutatea pe care o eviți devine greutatea care te doboară',
-            'fii primul care recunoaște când greșește',
-            'un bărbat adevărat construiește, nu distruge',
-            'simplitatea e sofisticarea supremă',
-            'în liniște se nasc cele mai puternice decizii',
-            'caută adevărul chiar când doare',
-            'nu aștepta momentul perfect — creează-l',
+            'ordinea bate talentul', 'disciplina e libertate',
             'fii genul de om pe care l-ai fi admirat la 15 ani',
-            'ceea ce faci în fiecare zi contează mai mult decât ce faci din când în când',
-            'suferința neasumată devine otravă',
-            'fii atent la ce construiești când nimeni nu se uită',
-            'nu poți schimba direcția vântului dar poți ajusta velele',
-            'curajul nu e absența fricii ci alegerea de a acționa',
-            'fii ancorat în valori nu în emoții',
-            'singurătatea aleasă e libertate',
-            'renunță la ce nu te crește',
-            'un om care nu citește nu are niciun avantaj față de unul care nu știe să citească'
+            'nu fugi de tine', 'caută adevărul chiar când doare',
+            'singurătatea aleasă e libertate', 'renunță la ce nu te crește',
+            ...Object.keys(themes) // CO- words
         ];
 
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
 
-        // Grid-based placement — prevents overlap
         const usedZones = new Set();
-        const GRID_COLS = isMobile ? 6 : 10;
-        const GRID_ROWS = isMobile ? 8 : 10;
+        const GRID_COLS = isMobile ? 5 : 8;
+        const GRID_ROWS = isMobile ? 7 : 8;
 
         function getOpenZone() {
-            // Avoid center zone (where title/tagline live)
-            const centerCols = isMobile ? [2,3] : [3,4,5,6];
-            const centerRows = isMobile ? [3,4] : [3,4,5,6];
+            const centerCols = isMobile ? [1,2,3] : [2,3,4,5];
+            const centerRows = isMobile ? [2,3,4] : [2,3,4,5];
             let attempts = 0;
-            while (attempts < 30) {
+            while (attempts < 40) {
                 const col = Math.floor(Math.random() * GRID_COLS);
                 const row = Math.floor(Math.random() * GRID_ROWS);
                 const key = col + ',' + row;
                 const inCenter = centerCols.includes(col) && centerRows.includes(row);
                 if (!usedZones.has(key) && !inCenter) {
                     usedZones.add(key);
-                    setTimeout(() => usedZones.delete(key), 2500);
+                    setTimeout(() => usedZones.delete(key), 4000);
                     return {
-                        left: Math.min(col / GRID_COLS * 85 + 3 + Math.random() * 4, 88),
-                        top: Math.min(row / GRID_ROWS * 80 + 5 + Math.random() * 4, 85)
+                        left: Math.min(col / GRID_COLS * 82 + 5 + Math.random() * 5, 85),
+                        top: Math.min(row / GRID_ROWS * 78 + 5 + Math.random() * 5, 82)
                     };
                 }
                 attempts++;
@@ -361,87 +326,112 @@
             return null;
         }
 
-        function spawnWord() {
+        function spawnWord(forceWord) {
             const pos = getOpenZone();
             if (!pos) return;
 
-            const word = words[Math.floor(Math.random() * words.length)];
+            const word = forceWord || allWords[Math.floor(Math.random() * allWords.length)];
+            const isCO = themes[word] !== undefined;
             const el = document.createElement('div');
             el.className = 'bg-word';
             el.textContent = word;
             el.style.left = pos.left + '%';
             el.style.top = pos.top + '%';
 
-            const dur = 3 + Math.random() * 5;
+            // Longer life — 6-12 seconds
+            const dur = 6 + Math.random() * 6;
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
-            el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.08})`);
-            // Shorter words get bigger font, longer phrases get smaller
+
+            // Random drift direction for movement
+            const driftX = () => (Math.random() * 30 - 15) + 'px';
+            const driftY = () => (Math.random() * 20 - 10) + 'px';
+            el.style.setProperty('--dx1', driftX());
+            el.style.setProperty('--dx2', driftX());
+            el.style.setProperty('--dy2', driftY());
+            el.style.setProperty('--dx3', driftX());
+            el.style.setProperty('--dy3', driftY());
+            el.style.setProperty('--dx4', driftX());
+
             const len = word.length;
             let size;
-            if (isMobile) {
-                size = len > 30 ? 9 + Math.random() * 3 : len > 15 ? 10 + Math.random() * 4 : 11 + Math.random() * 8;
+            if (isCO) {
+                // CO- words slightly bigger and brighter
+                size = isMobile ? 13 + Math.random() * 4 : 16 + Math.random() * 8;
+                el.style.setProperty('color', `rgba(255,255,255,${0.10 + Math.random() * 0.06})`);
+                el.style.fontWeight = '300';
+            } else if (isMobile) {
+                size = len > 25 ? 9 + Math.random() * 2 : len > 12 ? 10 + Math.random() * 3 : 11 + Math.random() * 6;
+                el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.07})`);
             } else {
-                size = len > 30 ? 11 + Math.random() * 4 : len > 15 ? 12 + Math.random() * 6 : 13 + Math.random() * 14;
+                size = len > 25 ? 11 + Math.random() * 3 : len > 12 ? 12 + Math.random() * 5 : 13 + Math.random() * 12;
+                el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.07})`);
             }
             el.style.fontSize = size + 'px';
-            if (isMobile) el.style.maxWidth = '42vw';
+            if (isMobile) el.style.maxWidth = '40vw';
 
-            // Click/tap on a word — highlight + attract others
+            // Click — highlight 3s + spawn 2 RELATED words
             el.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (el.classList.contains('highlight')) return;
-
                 el.classList.add('highlight');
-                el.style.animationPlayState = 'running';
 
-                // Attract nearby words
                 const rect = el.getBoundingClientRect();
                 const cx = rect.left + rect.width / 2;
                 const cy = rect.top + rect.height / 2;
 
-                // Spawn 3 new words that drift toward this one
-                for (let i = 0; i < 3; i++) {
+                // Find related words
+                let related;
+                if (themes[word]) {
+                    related = themes[word];
+                } else {
+                    // Find which theme this word belongs to
+                    const parentTheme = Object.entries(themes).find(([k, v]) => v.includes(word));
+                    related = parentTheme ? [parentTheme[0], ...parentTheme[1].filter(w => w !== word)] : null;
+                }
+
+                if (!related) {
+                    // Fallback: pick from same approximate category
+                    const idx = allWords.indexOf(word);
+                    related = allWords.slice(Math.max(0, idx - 3), idx + 4).filter(w => w !== word);
+                }
+
+                // Spawn 2 related words nearby
+                const picked = related.sort(() => Math.random() - 0.5).slice(0, 2);
+                picked.forEach((rw, i) => {
                     setTimeout(() => {
                         const child = document.createElement('div');
                         child.className = 'bg-word attracted';
-                        child.textContent = words[Math.floor(Math.random() * words.length)];
-                        const angle = (Math.PI * 2 / 3) * i + Math.random() * 0.5;
-                        const dist = 12 + Math.random() * 8;
-                        child.style.left = (cx / window.innerWidth * 100 + Math.cos(angle) * dist) + '%';
-                        child.style.top = (cy / window.innerHeight * 100 + Math.sin(angle) * dist) + '%';
-                        child.style.setProperty('--dur', '4s');
+                        child.textContent = rw;
+                        const angle = (Math.PI * 2 / 2) * i + Math.random() * 0.8;
+                        const dist = 6 + Math.random() * 5;
+                        child.style.left = Math.min(90, Math.max(5, cx / window.innerWidth * 100 + Math.cos(angle) * dist)) + '%';
+                        child.style.top = Math.min(85, Math.max(5, cy / window.innerHeight * 100 + Math.sin(angle) * dist)) + '%';
+                        child.style.setProperty('--dur', '5s');
                         child.style.setProperty('--del', '0s');
-                        child.style.setProperty('color', `rgba(255,255,255,${0.1 + Math.random() * 0.08})`);
-                        child.style.fontSize = (11 + Math.random() * 8) + 'px';
+                        child.style.setProperty('--dx1', '0px'); child.style.setProperty('--dx2', (Math.random()*10-5)+'px');
+                        child.style.setProperty('--dy2', (Math.random()*8-4)+'px'); child.style.setProperty('--dx3', (Math.random()*10-5)+'px');
+                        child.style.setProperty('--dy3', (Math.random()*8-4)+'px'); child.style.setProperty('--dx4', '0px');
+                        child.style.setProperty('color', `rgba(255,255,255,${0.12 + Math.random() * 0.08})`);
+                        child.style.fontSize = (isMobile ? 11 : 13) + Math.random() * 5 + 'px';
+                        if (isMobile) child.style.maxWidth = '40vw';
                         bg.appendChild(child);
+                        setTimeout(() => child.remove(), 5000);
+                    }, i * 300);
+                });
 
-                        // Drift toward parent
-                        requestAnimationFrame(() => {
-                            const drift = 3 + Math.random() * 3;
-                            child.style.left = (cx / window.innerWidth * 100 + Math.cos(angle) * drift) + '%';
-                            child.style.top = (cy / window.innerHeight * 100 + Math.sin(angle) * drift) + '%';
-                        });
-
-                        setTimeout(() => child.remove(), 4000);
-                    }, i * 200);
-                }
-
-                // Remove highlight after 3s
-                setTimeout(() => {
-                    el.classList.remove('highlight');
-                }, 3000);
+                setTimeout(() => el.classList.remove('highlight'), 3000);
             });
 
             bg.appendChild(el);
-            setTimeout(() => { el.remove(); }, dur * 1000);
+            setTimeout(() => el.remove(), dur * 1000);
         }
 
-        const initialCount = isMobile ? 15 : 30;
-        const spawnRate = isMobile ? 500 : 350;
+        const initialCount = isMobile ? 12 : 22;
+        const spawnRate = isMobile ? 600 : 450;
 
-        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2000);
-        setInterval(spawnWord, spawnRate);
+        for (let i = 0; i < initialCount; i++) setTimeout(spawnWord, Math.random() * 2500);
+        setInterval(() => spawnWord(), spawnRate);
 
         // Ripple effect (desktop only)
         const canvas = document.getElementById('ripple');
