@@ -48,8 +48,10 @@
             font-weight: 200;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            white-space: nowrap;
+            white-space: normal;
+            max-width: 45vw;
             user-select: none;
+            line-height: 1.4;
             animation: breathe var(--dur) var(--del) linear forwards;
             transition: color 0.3s, transform 0.3s, text-shadow 0.3s;
             pointer-events: all;
@@ -209,7 +211,7 @@
             .subscribe input[type="email"] { padding: 10px 12px; font-size: 12px; }
             .subscribe button { padding: 10px 12px; font-size: 10px; }
             .footer { font-size: 9px; padding: 8px 12px; }
-            .bg-word { letter-spacing: 0.1em; }
+            .bg-word { letter-spacing: 0.08em; max-width: 38vw; line-height: 1.3; }
         }
 
         @media (max-width: 360px) {
@@ -350,8 +352,8 @@
                     usedZones.add(key);
                     setTimeout(() => usedZones.delete(key), 2500);
                     return {
-                        left: (col / GRID_COLS * 90 + 5 + Math.random() * 4) ,
-                        top: (row / GRID_ROWS * 85 + 5 + Math.random() * 4)
+                        left: Math.min(col / GRID_COLS * 85 + 3 + Math.random() * 4, 88),
+                        top: Math.min(row / GRID_ROWS * 80 + 5 + Math.random() * 4, 85)
                     };
                 }
                 attempts++;
@@ -374,7 +376,16 @@
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
             el.style.setProperty('color', `rgba(255,255,255,${0.07 + Math.random() * 0.08})`);
-            el.style.fontSize = (isMobile ? 10 + Math.random() * 10 : 11 + Math.random() * 16) + 'px';
+            // Shorter words get bigger font, longer phrases get smaller
+            const len = word.length;
+            let size;
+            if (isMobile) {
+                size = len > 30 ? 9 + Math.random() * 3 : len > 15 ? 10 + Math.random() * 4 : 11 + Math.random() * 8;
+            } else {
+                size = len > 30 ? 11 + Math.random() * 4 : len > 15 ? 12 + Math.random() * 6 : 13 + Math.random() * 14;
+            }
+            el.style.fontSize = size + 'px';
+            if (isMobile) el.style.maxWidth = '42vw';
 
             // Click/tap on a word — highlight + attract others
             el.addEventListener('click', (e) => {
