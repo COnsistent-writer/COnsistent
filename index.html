@@ -19,7 +19,6 @@
             --bg: #080808;
             --text: #ffffff;
             --dim: rgba(255, 255, 255, 0.30);
-            --ghost: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -35,20 +34,12 @@
             position: relative;
         }
 
-        /* Background floating words */
-        .bg-words {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-        }
+        .bg-words { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
 
         .bg-word {
             position: absolute;
             font-size: clamp(12px, 2.5vw, 18px);
             font-weight: 200;
-            color: rgba(255, 255, 255, 0);
             letter-spacing: 0.2em;
             text-transform: uppercase;
             white-space: nowrap;
@@ -63,159 +54,98 @@
             100% { opacity: 0; transform: translateY(-12px) scale(0.98); filter: blur(3px); }
         }
 
-        /* Vignette overlay */
         .vignette {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: radial-gradient(ellipse at center, transparent 30%, var(--bg) 75%);
-            pointer-events: none;
-            z-index: 1;
+            pointer-events: none; z-index: 1;
         }
 
-        /* Main content */
         .content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 40px 24px;
-            max-width: 600px;
+            position: relative; z-index: 2; text-align: center;
+            padding: 40px 24px; max-width: 600px;
         }
 
         .title {
-            font-size: clamp(42px, 9vw, 100px);
-            font-weight: 900;
-            letter-spacing: 0.12em;
-            line-height: 1;
+            font-size: clamp(42px, 9vw, 100px); font-weight: 900;
+            letter-spacing: 0.12em; line-height: 1;
             background: linear-gradient(180deg, #ffffff 20%, #4a4a4a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            opacity: 0;
-            transform: translateY(20px);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            opacity: 0; transform: translateY(20px);
             animation: rise 1.8s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .divider {
-            width: 40px;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.12);
-            margin: 28px auto;
-            opacity: 0;
-            animation: expandLine 1.2s 1s ease-out forwards;
+            width: 40px; height: 1px; background: rgba(255,255,255,0.12);
+            margin: 28px auto; opacity: 0; animation: expandLine 1.2s 1s ease-out forwards;
         }
 
         .tagline {
             font-family: 'Crimson Pro', serif;
-            font-size: clamp(15px, 2.2vw, 19px);
-            font-weight: 300;
-            font-style: italic;
-            color: var(--dim);
-            letter-spacing: 0.02em;
-            line-height: 1.6;
-            opacity: 0;
-            animation: fadeUp 1.5s 1.3s ease-out forwards;
+            font-size: clamp(15px, 2.2vw, 19px); font-weight: 300; font-style: italic;
+            color: var(--dim); letter-spacing: 0.02em; line-height: 1.6;
+            opacity: 0; animation: fadeUp 1.5s 1.3s ease-out forwards;
         }
 
         .coming {
-            margin-top: 48px;
-            font-size: 11px;
-            font-weight: 300;
-            letter-spacing: 0.5em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.18);
-            opacity: 0;
+            margin-top: 48px; font-size: 11px; font-weight: 300;
+            letter-spacing: 0.5em; text-transform: uppercase;
+            color: rgba(255,255,255,0.18); opacity: 0;
             animation: fadeUp 1.5s 1.8s ease-out forwards;
         }
 
-        /* Email subscribe */
         .subscribe {
-            margin-top: 36px;
-            opacity: 0;
+            margin-top: 36px; opacity: 0;
             animation: fadeUp 1.5s 2.2s ease-out forwards;
         }
 
-        .subscribe form {
-            display: flex;
-            gap: 0;
-            max-width: 380px;
-            margin: 0 auto;
-        }
+        .subscribe form { display: flex; gap: 0; max-width: 380px; margin: 0 auto; }
 
         .subscribe input[type="email"] {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-right: none;
-            border-radius: 4px 0 0 4px;
-            padding: 12px 16px;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 300;
-            letter-spacing: 0.03em;
-            outline: none;
-            transition: border-color 0.3s;
+            flex: 1; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-right: none;
+            border-radius: 4px 0 0 4px; padding: 12px 16px; color: #fff;
+            font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300;
+            letter-spacing: 0.03em; outline: none; transition: border-color 0.3s;
         }
 
-        .subscribe input[type="email"]::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .subscribe input[type="email"]:focus {
-            border-color: rgba(255, 255, 255, 0.25);
-        }
+        .subscribe input[type="email"]::placeholder { color: rgba(255,255,255,0.2); }
+        .subscribe input[type="email"]:focus { border-color: rgba(255,255,255,0.25); }
 
         .subscribe button {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0 4px 4px 0;
-            padding: 12px 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 0 4px 4px 0;
+            padding: 12px 20px; color: rgba(255,255,255,0.5);
+            font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s;
         }
 
-        .subscribe button:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: rgba(255, 255, 255, 0.8);
+        .subscribe button:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+        .subscribe .msg { margin-top: 12px; font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.3); min-height: 18px; }
+
+        /* Footer */
+        .footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            z-index: 2; text-align: center; padding: 20px;
+            font-size: 11px; font-weight: 300; color: rgba(255,255,255,0.12);
+            letter-spacing: 0.05em;
         }
 
-        .subscribe .msg {
-            margin-top: 12px;
-            font-size: 12px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.3);
-            min-height: 18px;
+        .footer a {
+            color: rgba(255,255,255,0.2); text-decoration: none;
+            transition: color 0.3s;
         }
 
-        /* Animations */
-        @keyframes rise {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .footer a:hover { color: rgba(255,255,255,0.4); }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes expandLine { from { width: 0; opacity: 0; } to { width: 40px; opacity: 1; } }
 
-        @keyframes expandLine {
-            from { width: 0; opacity: 0; }
-            to { width: 40px; opacity: 1; }
-        }
-
-        /* Subtle grain texture */
         body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
+            content: ''; position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 3;
+            pointer-events: none; z-index: 3;
         }
 
         @media (max-width: 480px) {
@@ -237,12 +167,18 @@
         <div class="coming">In curând</div>
         <div class="subscribe">
             <form id="subscribeForm">
-                <input type="email" id="emailInput" placeholder="adresa ta de email" required>
+                <input type="email" id="emailInput" name="email" placeholder="adresa ta de email" required>
                 <button type="submit">Anunță-mă</button>
             </form>
             <div class="msg" id="formMsg"></div>
         </div>
     </div>
+
+    <footer class="footer">
+        &copy; 2026 CONSISTENT. Toate drepturile rezervate. &nbsp;&middot;&nbsp;
+        <a href="/confidentialitate.html">Confidențialitate</a> &nbsp;&middot;&nbsp;
+        contact@consistent.ro
+    </footer>
 
     <script>
         const words = [
@@ -264,48 +200,48 @@
             el.textContent = word;
             el.style.left = (5 + Math.random() * 88) + '%';
             el.style.top = (5 + Math.random() * 88) + '%';
-
             const dur = 6 + Math.random() * 10;
             el.style.setProperty('--dur', dur + 's');
             el.style.setProperty('--del', '0s');
             el.style.setProperty('color', `rgba(255,255,255,${0.04 + Math.random() * 0.06})`);
-
-            if (Math.random() > 0.5) {
-                el.style.fontSize = (12 + Math.random() * 14) + 'px';
-            }
-
+            if (Math.random() > 0.5) el.style.fontSize = (12 + Math.random() * 14) + 'px';
             bg.appendChild(el);
             setTimeout(() => { el.remove(); }, dur * 1000);
         }
 
-        // Initial burst
-        for (let i = 0; i < 15; i++) {
-            setTimeout(spawnWord, Math.random() * 3000);
-        }
-
-        // Continuous spawning
+        for (let i = 0; i < 15; i++) setTimeout(spawnWord, Math.random() * 3000);
         setInterval(spawnWord, 800 + Math.random() * 600);
 
-        // Simple form handler — stores emails in localStorage for now
-        // Replace with real backend later
-        document.getElementById('subscribeForm').addEventListener('submit', function(e) {
+        // Email subscribe — sends to Formspree (emails arrive at contact@consistent.ro)
+        document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('emailInput').value;
             const msg = document.getElementById('formMsg');
+            const btn = this.querySelector('button');
 
-            // Store locally until backend is ready
-            const emails = JSON.parse(localStorage.getItem('consistent_emails') || '[]');
-            if (emails.includes(email)) {
-                msg.textContent = 'Ești deja pe listă.';
-                return;
+            btn.disabled = true;
+            btn.textContent = '...';
+
+            try {
+                const res = await fetch('https://formspree.io/f/mzzeqpkr', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if (res.ok) {
+                    msg.textContent = 'Mulțumim. Te anunțăm.';
+                    document.getElementById('emailInput').value = '';
+                } else {
+                    msg.textContent = 'Eroare. Încearcă din nou.';
+                }
+            } catch {
+                msg.textContent = 'Eroare de conexiune.';
             }
-            emails.push(email);
-            localStorage.setItem('consistent_emails', JSON.stringify(emails));
 
-            msg.textContent = 'Mulțumim. Te anunțăm.';
-            document.getElementById('emailInput').value = '';
-
-            setTimeout(() => { msg.textContent = ''; }, 4000);
+            btn.disabled = false;
+            btn.textContent = 'Anunță-mă';
+            setTimeout(() => { msg.textContent = ''; }, 5000);
         });
     </script>
 
