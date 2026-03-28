@@ -91,7 +91,22 @@
             font-size: clamp(17px, 2.8vw, 24px); font-weight: 400;
             color: rgba(255,255,255,0.5); letter-spacing: 0.02em; line-height: 1.7;
             opacity: 0; animation: fadeUp 1.5s 1.2s ease-out forwards;
-            max-width: 440px; margin: 12px auto 0; padding: 0 16px;
+            max-width: 480px; margin: 12px auto 0; padding: 0 16px;
+            min-height: 3.4em;
+        }
+        .tagline .tl-char {
+            display: inline-block;
+            transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
+        }
+        .tagline .tl-char.out {
+            opacity: 0;
+            transform: translateY(-8px);
+            filter: blur(4px);
+        }
+        .tagline .tl-char.in {
+            opacity: 0;
+            transform: translateY(8px);
+            filter: blur(4px);
         }
 
         .center-email {
@@ -319,7 +334,7 @@
         <div class="title">CONSISTENT</div>
         <div class="divider"></div>
         <div class="coming">În curând</div>
-        <div class="tagline">Cartea de care ai nevoie,<br>nu cea pe care o vrei.</div>
+        <div class="tagline" id="tagline"></div>
         <form id="subscribeForm" style="pointer-events:all; display:flex; gap:0; max-width:340px; margin:16px auto 0;">
             <input type="email" id="emailInput" name="email" placeholder="adresa ta de email" required>
             <button type="submit">Anunță-mă</button>
@@ -656,6 +671,68 @@
             btn.disabled = false; btn.textContent = 'Anunță-mă';
             setTimeout(() => { msg.textContent = ''; }, 5000);
         });
+
+        // ═══════════════════════════════════════════
+        // ROTATING TAGLINES — dissolve per character
+        // ═══════════════════════════════════════════
+        const taglines = [
+            'Ordinea interioară precede orice victorie exterioară.',
+            'Nu circumstanțele. Tu.',
+            'Tăcerea care construiește.',
+            'Ceea ce controlezi e tot ce ai nevoie.',
+            'Furtuna e în afară. Tu ești înăuntru.',
+            'Greutatea pe care alegi s-o porți te definește.',
+            'Prin foc, nu prin confort.',
+            'Adevărul costă. Minciuna costă mai mult.',
+            'Stânca nu se explică oceanului.',
+            'Cine ești când nu te vede nimeni?',
+        ];
+
+        const tagEl = document.getElementById('tagline');
+        let tIdx = 0;
+
+        function renderTagline(text, startClass) {
+            tagEl.innerHTML = '';
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.className = 'tl-char' + (startClass ? ' ' + startClass : '');
+                span.textContent = text[i] === ' ' ? '\u00a0' : text[i];
+                span.style.transitionDelay = (i * 18) + 'ms';
+                tagEl.appendChild(span);
+            }
+        }
+
+        function showTagline() {
+            const text = taglines[tIdx % taglines.length];
+            // Render with .in class (hidden, below)
+            renderTagline(text, 'in');
+            // Force reflow then remove .in to trigger enter
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    tagEl.querySelectorAll('.tl-char').forEach(c => c.classList.remove('in'));
+                });
+            });
+        }
+
+        function hideTagline(cb) {
+            const chars = tagEl.querySelectorAll('.tl-char');
+            if (chars.length === 0) { cb(); return; }
+            chars.forEach(c => c.classList.add('out'));
+            // Wait for last char to finish
+            const totalTime = chars.length * 18 + 400;
+            setTimeout(cb, totalTime);
+        }
+
+        function cycleTagline() {
+            hideTagline(() => {
+                tIdx++;
+                showTagline();
+            });
+        }
+
+        // Initial show after page load animation
+        setTimeout(() => { showTagline(); }, 1500);
+        setInterval(cycleTagline, 7000);
 
         // ═══════════════════════════════════════════
         // EFFECT 1: GRAVITY WELL — words drift toward cursor
