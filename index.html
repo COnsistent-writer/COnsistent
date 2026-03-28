@@ -125,7 +125,7 @@
         .coming {
             margin-top: 16px; font-size: clamp(18px, 3vw, 26px); font-weight: 300;
             letter-spacing: 0.35em; text-transform: uppercase;
-            color: rgba(212,175,105,0.45); opacity: 0;
+            color: rgba(212,175,105,0.75); opacity: 0;
             animation: fadeUp 1.5s 0.8s ease-out forwards, breatheText 3s 2.5s ease-in-out infinite;
         }
 
@@ -227,25 +227,25 @@
         .bottom-bar .letter-link {
             display: inline-block;
             font-size: 13px; font-weight: 300;
-            color: rgba(212,175,105,0.3);
+            color: rgba(212,175,105,0.55);
             text-decoration: none; letter-spacing: 0.08em;
             padding: 8px 20px;
-            border: 1px solid rgba(212,175,105,0.1);
+            border: 1px solid rgba(212,175,105,0.2);
             border-radius: 4px;
             margin-bottom: 10px;
             transition: all 0.3s;
         }
 
         .bottom-bar .letter-link:hover {
-            color: rgba(212,175,105,0.55);
-            border-color: rgba(212,175,105,0.25);
-            background: rgba(212,175,105,0.04);
+            color: rgba(212,175,105,0.8);
+            border-color: rgba(212,175,105,0.4);
+            background: rgba(212,175,105,0.06);
         }
 
         .bottom-bar .teaser {
             margin: 6px 0 8px; font-size: 13px; font-weight: 300;
             letter-spacing: 0.2em; text-transform: uppercase;
-            color: rgba(212,175,105,0.3);
+            color: rgba(212,175,105,0.55);
         }
 
         .share-bar {
@@ -256,16 +256,16 @@
         .share-bar a {
             display: flex; align-items: center; justify-content: center;
             width: 36px; height: 36px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: rgba(255,255,255,0.35);
             text-decoration: none; font-size: 16px;
             transition: all 0.3s;
         }
 
         .share-bar a:hover {
-            border-color: rgba(212,175,105,0.25);
-            color: rgba(212,175,105,0.5);
-            background: rgba(212,175,105,0.05);
+            border-color: rgba(212,175,105,0.4);
+            color: rgba(212,175,105,0.7);
+            background: rgba(212,175,105,0.08);
             transform: scale(1.1);
         }
 
@@ -273,14 +273,14 @@
 
         .bottom-bar .footer-line {
             font-size: 13px; font-weight: 300;
-            color: rgba(255,255,255,0.2); letter-spacing: 0.04em;
+            color: rgba(255,255,255,0.35); letter-spacing: 0.04em;
         }
 
         .bottom-bar .footer-line a {
-            color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.3s;
+            color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.3s;
         }
 
-        .bottom-bar .footer-line a:hover { color: rgba(212,175,105,0.5); }
+        .bottom-bar .footer-line a:hover { color: rgba(212,175,105,0.7); }
 
         @keyframes rise { to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
