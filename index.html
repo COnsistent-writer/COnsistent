@@ -343,7 +343,6 @@
     </div>
 
     <div class="bottom-bar">
-        <div class="countdown" id="countdown"></div>
         <a href="/scrisoare.html" class="letter-link">&#9993; Scrie-ți o scrisoare către tine din viitor</a>
         <div class="teaser">50 de capitole. Un singur adevăr.</div>
         <div class="share-bar">
@@ -615,42 +614,8 @@
             animateWord(el, 8, e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100);
         });
 
-        // Countdown to 13 Sept 2027
+        // Launch date — used in confirmation message
         const LAUNCH = new Date('2027-09-13T00:00:00');
-        const cdEl = document.getElementById('countdown');
-
-        function updateCountdown() {
-            const now = new Date();
-            const diff = LAUNCH - now;
-            if (diff <= 0) { cdEl.innerHTML = '<span style="color:rgba(212,175,105,0.5);font-size:14px;letter-spacing:0.3em;">DISPONIBILĂ</span>'; return; }
-
-            const d = Math.floor(diff / 86400000);
-            const h = Math.floor((diff % 86400000) / 3600000);
-            const m = Math.floor((diff % 3600000) / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-
-            cdEl.innerHTML = `
-                <div class="cd-block"><div class="cd-num">${d}</div><div class="cd-label">zile</div></div>
-                <div class="cd-sep">:</div>
-                <div class="cd-block"><div class="cd-num">${String(h).padStart(2,'0')}</div><div class="cd-label">ore</div></div>
-                <div class="cd-sep">:</div>
-                <div class="cd-block"><div class="cd-num">${String(m).padStart(2,'0')}</div><div class="cd-label">min</div></div>
-                <div class="cd-sep">:</div>
-                <div class="cd-block"><div class="cd-num">${String(s).padStart(2,'0')}</div><div class="cd-label">sec</div></div>
-            `;
-        }
-        updateCountdown();
-        setInterval(() => {
-            updateCountdown();
-            // Flip animation on seconds
-            const nums = cdEl.querySelectorAll('.cd-num');
-            const secEl = nums[nums.length - 1];
-            if (secEl) {
-                secEl.classList.remove('flip');
-                void secEl.offsetWidth; // force reflow
-                secEl.classList.add('flip');
-            }
-        }, 1000);
 
         // Formspree
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
@@ -665,11 +630,17 @@
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({ email })
                 });
-                msg.textContent = res.ok ? 'Mulțumim. Te anunțăm.' : 'Eroare. Încearcă din nou.';
-                if (res.ok) document.getElementById('emailInput').value = '';
+                if (res.ok) {
+                    const diff = LAUNCH - new Date();
+                    const days = Math.floor(diff / 86400000);
+                    msg.innerHTML = 'Mulțumim. Te anunțăm în <strong style="color:rgba(212,175,105,0.6)">' + days + ' zile</strong>.';
+                    document.getElementById('emailInput').value = '';
+                } else {
+                    msg.textContent = 'Eroare. Încearcă din nou.';
+                }
             } catch { msg.textContent = 'Eroare de conexiune.'; }
             btn.disabled = false; btn.textContent = 'Anunță-mă';
-            setTimeout(() => { msg.textContent = ''; }, 5000);
+            setTimeout(() => { msg.innerHTML = ''; }, 8000);
         });
 
         // ═══════════════════════════════════════════
