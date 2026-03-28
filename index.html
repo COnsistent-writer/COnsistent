@@ -312,6 +312,8 @@
     <div class="bg-words" id="bgWords"></div>
     <div class="vignette"></div>
     <canvas id="ripple" style="position:fixed;inset:0;z-index:1;pointer-events:none;"></canvas>
+    <canvas id="heatmap" style="position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.7;"></canvas>
+    <canvas id="seismo" style="position:fixed;bottom:38%;left:0;width:100%;height:60px;z-index:1;pointer-events:none;"></canvas>
 
     <div class="content">
         <div class="title">CONSISTENT</div>
@@ -676,6 +678,216 @@
             btn.disabled = false; btn.textContent = 'Anunță-mă';
             setTimeout(() => { msg.textContent = ''; }, 5000);
         });
+
+        // ═══════════════════════════════════════════
+        // EFFECT 1: GRAVITY WELL — words drift toward cursor
+        // ═══════════════════════════════════════════
+        if (!isMobile) {
+            let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+            let mSpeed = 0, pmx = mx, pmy = my;
+
+            document.addEventListener('mousemove', e => {
+                pmx = mx; pmy = my;
+                mx = e.clientX; my = e.clientY;
+                mSpeed = Math.hypot(mx - pmx, my - pmy);
+            });
+
+            setInterval(() => {
+                const words = document.querySelectorAll('.bg-word');
+                words.forEach(w => {
+                    const r = w.getBoundingClientRect();
+                    if (r.width === 0) return;
+                    const wx = r.left + r.width / 2;
+                    const wy = r.top + r.height / 2;
+                    const dx = mx - wx, dy = my - wy;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 15 || dist > 500) return;
+
+                    // Attract when slow, repel when fast
+                    const force = mSpeed > 30
+                        ? -0.15 / (dist * 0.05)  // repel
+                        : 0.08 / (dist * 0.08);   // attract
+
+                    const ox = parseFloat(w.style.left) || 0;
+                    const oy = parseFloat(w.style.top) || 0;
+                    w.style.left = (ox + (dx / dist) * force) + '%';
+                    w.style.top = (oy + (dy / dist) * force) + '%';
+                });
+                mSpeed *= 0.9; // decay
+            }, 50);
+        }
+
+        // ═══════════════════════════════════════════
+        // EFFECT 2: THERMAL HEATMAP — cursor leaves warmth
+        // ═══════════════════════════════════════════
+        const heatCanvas = document.getElementById('heatmap');
+        const hctx = heatCanvas.getContext('2d');
+        heatCanvas.width = window.innerWidth;
+        heatCanvas.height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            heatCanvas.width = window.innerWidth;
+            heatCanvas.height = window.innerHeight;
+        });
+
+        if (!isMobile) {
+            let hx = 0, hy = 0;
+            document.addEventListener('mousemove', e => { hx = e.clientX; hy = e.clientY; });
+
+            (function heatLoop() {
+                // Cool down: darken everything slightly each frame
+                hctx.fillStyle = 'rgba(0,0,0,0.008)';
+                hctx.fillRect(0, 0, heatCanvas.width, heatCanvas.height);
+
+                // Warm up: paint at cursor
+                if (hx > 0) {
+                    const grad = hctx.createRadialGradient(hx, hy, 0, hx, hy, 80);
+                    grad.addColorStop(0, 'rgba(160,110,40,0.012)');
+                    grad.addColorStop(1, 'rgba(160,110,40,0)');
+                    hctx.fillStyle = grad;
+                    hctx.fillRect(hx - 80, hy - 80, 160, 160);
+                }
+                requestAnimationFrame(heatLoop);
+            })();
+        }
+
+        // ═══════════════════════════════════════════
+        // EFFECT 3: SEISMOGRAPH LINE — idle heartbeat, reactive tremor
+        // ═══════════════════════════════════════════
+        const sCanvas = document.getElementById('seismo');
+        const sctx = sCanvas.getContext('2d');
+        sCanvas.width = window.innerWidth;
+        sCanvas.height = 60;
+        window.addEventListener('resize', () => { sCanvas.width = window.innerWidth; sCanvas.height = 60; });
+
+        const sPoints = new Float32Array(Math.ceil(window.innerWidth / 2));
+        let sMouseSpeed = 0, sTime = 0;
+
+        if (!isMobile) {
+            let spx = 0, spy = 0;
+            document.addEventListener('mousemove', e => {
+                sMouseSpeed = Math.hypot(e.clientX - spx, e.clientY - spy);
+                spx = e.clientX; spy = e.clientY;
+            });
+            document.addEventListener('click', () => { sMouseSpeed = 150; }); // click = spike
+        }
+
+        (function seismoLoop() {
+            sTime += 0.03;
+            sMouseSpeed *= 0.92; // decay
+
+            // Shift points left
+            for (let i = 0; i < sPoints.length - 1; i++) sPoints[i] = sPoints[i + 1];
+
+            // New point: heartbeat sine + mouse tremor
+            const heartbeat = Math.sin(sTime * 2) * 3 + Math.sin(sTime * 5.7) * 1.5;
+            const tremor = (Math.random() - 0.5) * Math.min(sMouseSpeed * 0.4, 25);
+            sPoints[sPoints.length - 1] = heartbeat + tremor;
+
+            sctx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            sctx.beginPath();
+            sctx.moveTo(0, 30 + sPoints[0]);
+            for (let i = 1; i < sPoints.length; i++) {
+                sctx.lineTo(i * 2, 30 + sPoints[i]);
+            }
+            sctx.strokeStyle = 'rgba(212,175,105,0.07)';
+            sctx.lineWidth = 1;
+            sctx.stroke();
+
+            requestAnimationFrame(seismoLoop);
+        })();
+
+        // ═══════════════════════════════════════════
+        // EFFECT 4: CENSORSHIP — some words spawn redacted
+        // ═══════════════════════════════════════════
+        const origSpawn = spawn;
+        let spawnCount = 0;
+        // Override: every 8th word is censored
+        const _origSpawn = spawn;
+        // We patch by observing new words via MutationObserver
+        const censorObserver = new MutationObserver(mutations => {
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.classList && node.classList.contains('bg-word')) {
+                        spawnCount++;
+                        if (spawnCount % 8 === 0 && node.textContent.length > 3) {
+                            const original = node.textContent;
+                            const barLen = Math.min(original.length * 0.7, 12);
+                            node.textContent = '█'.repeat(Math.ceil(barLen));
+                            node.style.letterSpacing = '0.05em';
+                            node.dataset.censored = original;
+                            node.style.cursor = 'pointer';
+                            node.style.transition = 'all 0.5s';
+
+                            // Proximity reveal via mousemove
+                            const reveal = (e) => {
+                                const r = node.getBoundingClientRect();
+                                const cx = r.left + r.width / 2;
+                                const cy = r.top + r.height / 2;
+                                const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+                                if (dist < 120 && node.dataset.censored) {
+                                    node.textContent = node.dataset.censored;
+                                    node.style.letterSpacing = '';
+                                    node.style.color = 'rgba(212,175,105,0.4)';
+                                    // Re-censor after 4 seconds
+                                    setTimeout(() => {
+                                        if (node.parentNode) {
+                                            node.textContent = '█'.repeat(Math.ceil(barLen));
+                                            node.style.letterSpacing = '0.05em';
+                                            node.style.color = '';
+                                        }
+                                    }, 4000);
+                                }
+                            };
+                            if (!isMobile) {
+                                document.addEventListener('mousemove', reveal);
+                                setTimeout(() => document.removeEventListener('mousemove', reveal), 20000);
+                            } else {
+                                node.addEventListener('click', () => {
+                                    if (node.dataset.censored) {
+                                        node.textContent = node.dataset.censored;
+                                        node.style.color = 'rgba(212,175,105,0.4)';
+                                        setTimeout(() => {
+                                            if (node.parentNode) {
+                                                node.textContent = '█'.repeat(Math.ceil(barLen));
+                                                node.style.color = '';
+                                            }
+                                        }, 4000);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        censorObserver.observe(bg, { childList: true });
+
+        // ═══════════════════════════════════════════
+        // EFFECT 5: CHROMATIC ABERRATION on title by cursor speed
+        // Uses filter:drop-shadow since text-shadow is invisible on gradient-clipped text
+        // ═══════════════════════════════════════════
+        if (!isMobile) {
+            const titleEl = document.querySelector('.title');
+            let caPx = 0, caPy = 0, caSpeed = 0;
+
+            document.addEventListener('mousemove', e => {
+                caSpeed = Math.hypot(e.clientX - caPx, e.clientY - caPy);
+                caPx = e.clientX; caPy = e.clientY;
+            });
+
+            (function caLoop() {
+                caSpeed *= 0.88;
+                const shift = Math.min(caSpeed * 0.1, 4); // max 4px
+
+                if (shift > 0.3) {
+                    titleEl.style.filter =
+                        `drop-shadow(${-shift}px 0 0 rgba(255,50,50,0.12)) drop-shadow(${shift}px 0 0 rgba(50,50,255,0.12))`;
+                } else {
+                    titleEl.style.filter = 'none';
+                }
+                requestAnimationFrame(caLoop);
+            })();
+        }
     </script>
 
 </body>
