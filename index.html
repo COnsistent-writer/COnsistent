@@ -40,16 +40,16 @@
         }
 
         .bg-word:hover {
-            color: rgba(212,175,105,0.6) !important;
-            text-shadow: 0 0 24px rgba(212,175,105,0.18), 0 0 48px rgba(212,175,105,0.06);
+            filter: brightness(1.8) !important;
+            text-shadow: 0 0 20px currentColor;
             transform: scale(1.04);
-            transition: color 0.3s, text-shadow 0.3s, transform 0.3s;
+            transition: filter 0.3s, text-shadow 0.3s, transform 0.3s;
         }
 
         .bg-word.highlight {
             animation: pulse 0.4s ease-in-out infinite alternate !important;
-            color: rgba(212,175,105,0.5) !important;
-            text-shadow: 0 0 22px rgba(212,175,105,0.18);
+            filter: brightness(2) !important;
+            text-shadow: 0 0 22px currentColor;
         }
 
         @keyframes pulse {
@@ -510,21 +510,38 @@
 
             const len = word.length;
             let size;
-            // Color is set with full alpha — animateWord controls opacity via el.style.opacity
+
+            // Masculine color palette — each word gets one fixed color
+            const palette = [
+                'rgb(70,105,145)',    // steel blue
+                'rgb(45,80,110)',     // deep navy
+                'rgb(130,55,55)',     // burgundy
+                'rgb(100,45,45)',     // dark wine
+                'rgb(55,95,75)',      // forest green
+                'rgb(40,75,75)',      // deep teal
+                'rgb(170,120,55)',    // warm bronze
+                'rgb(145,100,50)',    // dark amber
+                'rgb(150,85,55)',     // copper
+                'rgb(95,90,80)',      // warm slate
+                'rgb(80,70,100)',     // muted purple
+                'rgb(110,75,60)',     // leather brown
+            ];
+            const pick = palette[Math.floor(Math.random() * palette.length)];
+
             if (isCO) {
                 size = isMobile ? 16 + Math.random() * 4 : 18 + Math.random() * 8;
-                el.style.color = 'rgb(212,175,105)';
+                el.style.color = pick;
                 el.style.fontWeight = '700';
                 el.style.letterSpacing = '0.2em';
-                el.dataset.maxOpacity = (0.35 + Math.random() * 0.15).toFixed(3);
+                el.dataset.maxOpacity = (0.45 + Math.random() * 0.2).toFixed(3);
             } else if (isMobile) {
                 size = len > 25 ? 11 : len > 12 ? 12 + Math.random() * 3 : 13 + Math.random() * 5;
-                el.style.color = 'rgb(255,255,255)';
-                el.dataset.maxOpacity = (0.25 + Math.random() * 0.15).toFixed(3);
+                el.style.color = pick;
+                el.dataset.maxOpacity = (0.35 + Math.random() * 0.2).toFixed(3);
             } else {
                 size = len > 25 ? 12 + Math.random() * 3 : len > 12 ? 13 + Math.random() * 5 : 14 + Math.random() * 10;
-                el.style.color = 'rgb(255,255,255)';
-                el.dataset.maxOpacity = (0.22 + Math.random() * 0.13).toFixed(3);
+                el.style.color = pick;
+                el.dataset.maxOpacity = (0.30 + Math.random() * 0.2).toFixed(3);
             }
             el.style.fontSize = size + 'px';
             if (isMobile) el.style.maxWidth = '40vw';
