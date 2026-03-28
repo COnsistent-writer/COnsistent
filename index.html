@@ -396,7 +396,6 @@
             'liniște', 'răbdare', 'credință', 'forță', 'esență', 'fundament',
             'în liniște se nasc deciziile', 'ceea ce eviți te controlează',
             'simplitatea e forță', 'acțiunea vindecă frica',
-            // Taglines selectate
             'cartea pe care ți-o datorezi',
             'cartea pe care ai amânat-o toată viața',
             'bărbatul pe care-l prefaci că ești îl ucide pe cel care ai putea deveni',
@@ -409,22 +408,11 @@
             'nu e cartea care te face să te simți bine. e cea care te face să fii bine.',
             'confortul te-a distrus. asta e antidotul.',
             'un singur om stă între tine și viața pe care o vrei. ești tu.',
+            'adevărul pe care îl eviți te definește',
             ...Object.keys(themes)
         ];
 
-        // Golden phrases — rare, special styling, rotate
-        const goldenPhrases = [
-            'adevărul pe care îl eviți te definește',
-            'bărbatul pe care-l prefaci că ești îl ucide pe cel care ai putea deveni',
-            'nu e cartea care te face să te simți bine. e cea care te face să fii bine.',
-            'un singur om stă între tine și viața pe care o vrei. ești tu.',
-            'confortul te-a distrus. asta e antidotul.'
-        ];
-        let goldenIdx = 0;
-        setInterval(() => {
-            spawn(goldenPhrases[goldenIdx % goldenPhrases.length]);
-            goldenIdx++;
-        }, 45000);
+        // All words treated equally — no preferential spawning
 
         const bg = document.getElementById('bgWords');
         const isMobile = window.innerWidth < 600;
@@ -514,16 +502,6 @@
                 size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 10;
                 el.style.color = `rgba(255,255,255,${0.07 + Math.random() * 0.07})`;
             }
-            // Special golden phrases — rare, unmissable
-            const isGolden = goldenPhrases.includes(word);
-            if (isGolden) {
-                size = isMobile ? 15 : 20;
-                el.style.color = 'rgba(212,175,105,0.35)';
-                el.style.fontWeight = '700';
-                el.style.letterSpacing = '0.18em';
-                el.style.textShadow = '0 0 30px rgba(212,175,105,0.08)';
-            }
-
             el.style.fontSize = size + 'px';
             if (isMobile) el.style.maxWidth = '40vw';
 
