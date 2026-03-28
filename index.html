@@ -505,16 +505,16 @@
             const len = word.length;
             let size;
             if (isCO) {
-                size = isMobile ? 14 + Math.random() * 3 : 17 + Math.random() * 7;
-                el.style.color = `rgba(212,175,105,${0.18 + Math.random() * 0.12})`;
+                size = isMobile ? 16 + Math.random() * 4 : 18 + Math.random() * 8;
+                el.style.color = `rgba(212,175,105,${0.35 + Math.random() * 0.15})`;
                 el.style.fontWeight = '700';
                 el.style.letterSpacing = '0.2em';
             } else if (isMobile) {
-                size = len > 25 ? 9 : len > 12 ? 10 + Math.random() * 2 : 11 + Math.random() * 5;
-                el.style.color = `rgba(255,255,255,${0.12 + Math.random() * 0.10})`;
+                size = len > 25 ? 11 : len > 12 ? 12 + Math.random() * 3 : 13 + Math.random() * 5;
+                el.style.color = `rgba(255,255,255,${0.25 + Math.random() * 0.15})`;
             } else {
-                size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 10;
-                el.style.color = `rgba(255,255,255,${0.12 + Math.random() * 0.10})`;
+                size = len > 25 ? 12 + Math.random() * 3 : len > 12 ? 13 + Math.random() * 5 : 14 + Math.random() * 10;
+                el.style.color = `rgba(255,255,255,${0.22 + Math.random() * 0.13})`;
             }
             el.style.fontSize = size + 'px';
             if (isMobile) el.style.maxWidth = '40vw';
