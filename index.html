@@ -40,8 +40,10 @@
         }
 
         .bg-word:hover {
-            color: rgba(212,175,105,0.55) !important;
-            text-shadow: 0 0 18px rgba(212,175,105,0.12);
+            color: rgba(212,175,105,0.6) !important;
+            text-shadow: 0 0 24px rgba(212,175,105,0.18), 0 0 48px rgba(212,175,105,0.06);
+            transform: scale(1.04);
+            transition: color 0.3s, text-shadow 0.3s, transform 0.3s;
         }
 
         .bg-word.highlight {
@@ -141,7 +143,11 @@
         }
 
         #subscribeForm input[type="email"]::placeholder { color: rgba(255,255,255,0.15); }
-        #subscribeForm input[type="email"]:focus { border-color: rgba(212,175,105,0.3); }
+        #subscribeForm input[type="email"]:focus {
+            border-color: rgba(212,175,105,0.35);
+            background: rgba(212,175,105,0.03);
+            box-shadow: 0 0 12px rgba(212,175,105,0.06), inset 0 0 8px rgba(212,175,105,0.02);
+        }
 
         #subscribeForm button {
             background: rgba(212,175,105,0.08);
@@ -172,6 +178,17 @@
             color: rgba(212,175,105,0.45);
             letter-spacing: 0.05em;
             font-variant-numeric: tabular-nums;
+            display: inline-block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .countdown .cd-num.flip {
+            animation: flipNum 0.4s ease;
+        }
+        @keyframes flipNum {
+            0% { transform: translateY(0); opacity: 1; }
+            40% { transform: translateY(-6px); opacity: 0.3; }
+            60% { transform: translateY(4px); opacity: 0.3; }
+            100% { transform: translateY(0); opacity: 1; }
         }
 
         .countdown .cd-label {
@@ -577,8 +594,25 @@
             });
         }
 
+        // Floating particles
+        const particles = [];
+        const PARTICLE_COUNT = isMobile ? 15 : 35;
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * (canvas.width || window.innerWidth),
+                y: Math.random() * (canvas.height || window.innerHeight),
+                r: Math.random() * 1.2 + 0.3,
+                vy: Math.random() * 0.25 + 0.08,
+                vx: (Math.random() - 0.5) * 0.15,
+                o: Math.random() * 0.1 + 0.02,
+                oDir: 1,
+            });
+        }
+
         (function drawRipples() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ripples
             ripples = ripples.filter(r => r.a > 0.001);
             ripples.forEach(r => {
                 r.r += 1.2; r.a *= 0.97;
@@ -588,6 +622,29 @@
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
             });
+
+            // Particles
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212,175,105,${p.o})`;
+                ctx.fill();
+
+                // Drift up slowly
+                p.y -= p.vy;
+                p.x += p.vx;
+
+                // Gentle opacity pulse
+                p.o += p.oDir * 0.0004;
+                if (p.o > 0.12) p.oDir = -1;
+                if (p.o < 0.015) p.oDir = 1;
+
+                // Wrap around
+                if (p.y < -5) { p.y = canvas.height + 5; p.x = Math.random() * canvas.width; }
+                if (p.x < -5) p.x = canvas.width + 5;
+                if (p.x > canvas.width + 5) p.x = -5;
+            });
+
             requestAnimationFrame(drawRipples);
         })();
 
@@ -628,7 +685,17 @@
             `;
         }
         updateCountdown();
-        setInterval(updateCountdown, 1000);
+        setInterval(() => {
+            updateCountdown();
+            // Flip animation on seconds
+            const nums = cdEl.querySelectorAll('.cd-num');
+            const secEl = nums[nums.length - 1];
+            if (secEl) {
+                secEl.classList.remove('flip');
+                void secEl.offsetWidth; // force reflow
+                secEl.classList.add('flip');
+            }
+        }, 1000);
 
         // Formspree
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
