@@ -17,7 +17,8 @@
 
         :root { --bg: #080808; }
 
-        html, body { width: 100%; height: 100%; overflow: hidden; }
+        html, body { width: 100%; height: 100dvh; height: 100vh; overflow: hidden; }
+        @supports (height: 100dvh) { html, body { height: 100dvh; } }
 
         body {
             background: var(--bg); color: #fff;
@@ -64,12 +65,12 @@
 
         .content {
             position: relative; z-index: 2; text-align: center;
-            padding: 0 24px; margin-top: -4vh;
+            padding: 0 24px; margin-top: -2vh;
             pointer-events: none;
         }
 
         .title {
-            font-size: clamp(36px, 9vw, 100px); font-weight: 900;
+            font-size: clamp(36px, min(9vw, 12vh), 100px); font-weight: 900;
             letter-spacing: 0.12em; line-height: 1;
             background: linear-gradient(135deg, #d4af69 0%, #8b7355 25%, #c9b896 50%, #6b5b45 75%, #d4af69 100%);
             background-size: 300% 300%;
@@ -88,7 +89,7 @@
 
         .tagline {
             font-family: 'Crimson Pro', serif;
-            font-size: clamp(17px, 2.8vw, 24px); font-weight: 400;
+            font-size: clamp(15px, min(2.8vw, 3.5vh), 24px); font-weight: 400;
             color: rgba(255,255,255,0.5); letter-spacing: 0.02em; line-height: 1.7;
             opacity: 0; animation: fadeUp 1.5s 1.2s ease-out forwards;
             max-width: 480px; margin: 12px auto 0; padding: 0 16px;
@@ -123,7 +124,7 @@
         .center-email a:hover { color: rgba(212,175,105,0.4); }
 
         .coming {
-            margin-top: 16px; font-size: clamp(18px, 3vw, 26px); font-weight: 300;
+            margin-top: 12px; font-size: clamp(14px, min(3vw, 3.5vh), 26px); font-weight: 300;
             letter-spacing: 0.35em; text-transform: uppercase;
             color: rgba(212,175,105,0.75); opacity: 0;
             animation: fadeUp 1.5s 0.8s ease-out forwards, breatheText 3s 2.5s ease-in-out infinite;
@@ -138,7 +139,8 @@
             position: fixed; bottom: 0; left: 0; right: 0;
             z-index: 4; text-align: center;
             background: linear-gradient(180deg, transparent 0%, rgba(8,8,8,0.85) 25%, rgba(8,8,8,0.97) 100%);
-            padding: 28px 24px 16px;
+            padding: 20px 24px 12px;
+            max-height: 45vh; overflow-y: auto;
             opacity: 0;
             animation: fadeUp 1.5s 2s ease-out forwards;
         }
@@ -292,38 +294,85 @@
             pointer-events: none; z-index: 5;
         }
 
+        /* Desktop portrait / narrow window (601-900px) */
+        @media (max-width: 900px) and (min-width: 601px) {
+            .content { margin-top: -1vh; }
+            .bottom-bar { padding: 18px 20px 10px; }
+            #subscribeForm { max-width: 300px; }
+            .share-bar { gap: 12px; margin: 6px 0 6px; }
+            .share-bar a { width: 32px; height: 32px; }
+            .bottom-bar .teaser { font-size: 12px; margin: 4px 0 4px; }
+            .bottom-bar .footer-line { font-size: 12px; }
+            .bg-word { max-width: 35vw; }
+        }
+
+        /* Portrait orientation — tall and narrow */
+        @media (orientation: portrait) and (min-width: 601px) {
+            .content { margin-top: 0; }
+            .title { font-size: clamp(36px, 7vw, 72px); }
+            .tagline { font-size: clamp(15px, 2.2vw, 20px); }
+            .coming { font-size: clamp(14px, 2.2vw, 20px); }
+        }
+
+        /* Mobile */
         @media (max-width: 600px) {
-            .content { margin-top: -6vh; }
+            .content { margin-top: -4vh; }
             .title { letter-spacing: 0.08em; }
-            .tagline { font-size: 18px; padding: 0 12px; }
-            .coming { margin-top: 10px; font-size: 14px; }
-            .bottom-bar { padding: 28px 16px 10px; }
+            .tagline { font-size: 16px; padding: 0 12px; }
+            .coming { margin-top: 8px; font-size: 14px; }
+            .bottom-bar { padding: 20px 16px 8px; }
             #subscribeForm { max-width: 280px; }
             #subscribeForm input[type="email"] { padding: 10px 12px; font-size: 12px; }
             #subscribeForm button { padding: 10px 12px; font-size: 10px; }
             .countdown .cd-num { font-size: 18px; }
             .countdown .cd-sep { font-size: 14px; }
-            .countdown { gap: 10px; margin-bottom: 8px; }
+            .countdown { gap: 10px; margin-bottom: 6px; }
             .bottom-bar .letter-link { font-size: 12px; padding: 7px 16px; }
             .bottom-bar .teaser { font-size: 11px; margin: 4px 0 4px; }
             .bottom-bar .footer-line { font-size: 11px; }
-            .coming { font-size: 16px; }
-            .coming { font-size: 14px; }
+            .share-bar { gap: 12px; margin: 6px 0 6px; }
+            .share-bar a { width: 32px; height: 32px; }
             .bg-word { letter-spacing: 0.08em; max-width: 38vw; line-height: 1.3; }
         }
 
         @media (max-width: 360px) {
             .title { letter-spacing: 0.05em; }
             .tagline { font-size: 15px; }
-            .bottom-bar { padding: 24px 12px 8px; }
+            .bottom-bar { padding: 16px 12px 6px; }
             #subscribeForm { max-width: 260px; }
         }
 
-        @media (max-height: 500px) {
+        /* Short screens — landscape or small height */
+        @media (max-height: 600px) {
             .content { margin-top: 0; }
-            .divider { margin: 12px auto; }
-            .coming { margin-top: 10px; }
-            .bottom-bar { padding: 20px 16px 10px; }
+            .coming { margin-top: 6px; }
+            .tagline { min-height: 2.4em; }
+            .bottom-bar { padding: 14px 16px 6px; }
+            .bottom-bar .letter-link { padding: 5px 14px; font-size: 11px; margin-bottom: 4px; }
+            .bottom-bar .teaser { font-size: 11px; margin: 2px 0 2px; }
+            .countdown { gap: 8px; margin-bottom: 4px; }
+            .countdown .cd-num { font-size: 16px; }
+            .countdown .cd-label { font-size: 7px; }
+            .share-bar { gap: 10px; margin: 4px 0 4px; }
+            .share-bar a { width: 28px; height: 28px; font-size: 13px; }
+            .share-bar svg { width: 13px; height: 13px; }
+            .bottom-bar .footer-line { font-size: 10px; }
+            #subscribeForm input[type="email"] { padding: 8px 10px; font-size: 11px; }
+            #subscribeForm button { padding: 8px 10px; font-size: 9px; }
+        }
+
+        /* Very short (landscape phone) */
+        @media (max-height: 420px) {
+            .coming { display: none; }
+            .tagline { display: none; }
+            .content { margin-top: 0; }
+            .bottom-bar .teaser { display: none; }
+            .share-bar { display: none; }
+        }
+
+        /* iPhone fix — safe area inset for notch/home bar */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .bottom-bar { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
         }
     </style>
 </head>
@@ -340,7 +389,7 @@
         <div class="divider"></div>
         <div class="coming">În curând</div>
         <div class="tagline" id="tagline"></div>
-        <form id="subscribeForm" style="pointer-events:all; display:flex; gap:0; max-width:340px; margin:16px auto 0;">
+        <form id="subscribeForm" style="pointer-events:all; display:flex; gap:0; max-width:340px; margin:12px auto 0;">
             <input type="email" id="emailInput" name="email" placeholder="adresa ta de email" required>
             <button type="submit">Anunță-mă</button>
         </form>
@@ -434,12 +483,13 @@
         // All words treated equally — no preferential spawning
 
         const bg = document.getElementById('bgWords');
-        const isMobile = window.innerWidth < 600;
+        const isMobile = window.innerWidth < 600 || (window.innerWidth < 900 && window.innerHeight > window.innerWidth);
+        const isNarrowDesktop = !isMobile && window.innerWidth < 900;
         const usedZones = new Set();
-        const COLS = isMobile ? 5 : 8;
-        const ROWS = isMobile ? 7 : 8;
-        const centerCols = isMobile ? [1,2,3] : [2,3,4,5];
-        const centerRows = isMobile ? [2,3,4] : [2,3,4,5];
+        const COLS = isMobile ? 5 : isNarrowDesktop ? 6 : 8;
+        const ROWS = isMobile ? 7 : isNarrowDesktop ? 8 : 8;
+        const centerCols = isMobile ? [1,2,3] : isNarrowDesktop ? [1,2,3,4] : [2,3,4,5];
+        const centerRows = isMobile ? [2,3,4] : isNarrowDesktop ? [2,3,4,5] : [2,3,4,5];
 
         function getZone() {
             for (let a = 0; a < 50; a++) {
@@ -529,7 +579,7 @@
             const pick = palette[Math.floor(Math.random() * palette.length)];
 
             if (isCO) {
-                size = isMobile ? 16 + Math.random() * 4 : 18 + Math.random() * 8;
+                size = isMobile ? 16 + Math.random() * 4 : isNarrowDesktop ? 16 + Math.random() * 5 : 18 + Math.random() * 8;
                 el.style.color = pick;
                 el.style.fontWeight = '700';
                 el.style.letterSpacing = '0.2em';
@@ -538,13 +588,17 @@
                 size = len > 25 ? 11 : len > 12 ? 12 + Math.random() * 3 : 13 + Math.random() * 5;
                 el.style.color = pick;
                 el.dataset.maxOpacity = (0.35 + Math.random() * 0.2).toFixed(3);
+            } else if (isNarrowDesktop) {
+                size = len > 25 ? 11 + Math.random() * 2 : len > 12 ? 12 + Math.random() * 4 : 13 + Math.random() * 6;
+                el.style.color = pick;
+                el.dataset.maxOpacity = (0.28 + Math.random() * 0.18).toFixed(3);
             } else {
                 size = len > 25 ? 12 + Math.random() * 3 : len > 12 ? 13 + Math.random() * 5 : 14 + Math.random() * 10;
                 el.style.color = pick;
                 el.dataset.maxOpacity = (0.30 + Math.random() * 0.2).toFixed(3);
             }
             el.style.fontSize = size + 'px';
-            if (isMobile) el.style.maxWidth = '40vw';
+            if (isMobile || isNarrowDesktop) el.style.maxWidth = '40vw';
 
             // Click — highlight 3s, spawn 2 related
             el.addEventListener('click', (e) => {
@@ -596,9 +650,11 @@
             animateWord(el, dur, pos.left, pos.top);
         }
 
-        // Initial spawn — dense
-        for (let i = 0; i < (isMobile ? 22 : 38); i++) setTimeout(spawn, Math.random() * 1800);
-        setInterval(spawn, isMobile ? 300 : 200);
+        // Initial spawn — density adapted to screen
+        const spawnCount = isMobile ? 20 : isNarrowDesktop ? 28 : 38;
+        const spawnInterval = isMobile ? 350 : isNarrowDesktop ? 280 : 200;
+        for (let i = 0; i < spawnCount; i++) setTimeout(spawn, Math.random() * 1800);
+        setInterval(spawn, spawnInterval);
 
         // Ripple (desktop only)
         const canvas = document.getElementById('ripple');
