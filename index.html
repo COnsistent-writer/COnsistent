@@ -95,6 +95,10 @@
             max-width: 480px; margin: 12px auto 0; padding: 0 16px;
             min-height: 3.4em;
         }
+        .tagline .tl-word {
+            display: inline-block;
+            white-space: nowrap;
+        }
         .tagline .tl-char {
             display: inline-block;
             transition: opacity 0.4s ease, transform 0.4s ease, filter 0.4s ease;
@@ -492,20 +496,31 @@
         const centerRows = isMobile ? [2,3,4] : isNarrowDesktop ? [2,3,4,5] : [2,3,4,5];
 
         function getZone() {
-            for (let a = 0; a < 50; a++) {
-                const c = Math.floor(Math.random() * COLS);
-                const r = Math.floor(Math.random() * ROWS);
-                const k = c+','+r;
-                if (!usedZones.has(k) && !(centerCols.includes(c) && centerRows.includes(r))) {
-                    usedZones.add(k);
-                    setTimeout(() => usedZones.delete(k), 6000);
-                    return {
-                        left: Math.min(c / COLS * 82 + 5 + Math.random() * 6, 84),
-                        top: Math.min(r / ROWS * 76 + 5 + Math.random() * 6, 80)
-                    };
+            // Collect all available zones (not in center, not recently used)
+            const available = [];
+            for (let c = 0; c < COLS; c++) {
+                for (let r = 0; r < ROWS; r++) {
+                    if (centerCols.includes(c) && centerRows.includes(r)) continue;
+                    const k = c+','+r;
+                    if (!usedZones.has(k)) available.push({ c, r, k });
                 }
             }
-            return null;
+
+            // If all zones are taken, force-clear oldest and pick random
+            if (available.length === 0) {
+                const keys = Array.from(usedZones);
+                // Clear half the zones to free up space
+                keys.slice(0, Math.ceil(keys.length / 2)).forEach(k => usedZones.delete(k));
+                return getZone();
+            }
+
+            const pick = available[Math.floor(Math.random() * available.length)];
+            usedZones.add(pick.k);
+            setTimeout(() => usedZones.delete(pick.k), 4000);
+            return {
+                left: Math.min(pick.c / COLS * 82 + 5 + Math.random() * 6, 84),
+                top: Math.min(pick.r / ROWS * 76 + 5 + Math.random() * 6, 80)
+            };
         }
 
         // Smooth JS animation instead of CSS keyframes — full control
@@ -747,13 +762,30 @@
 
         function renderTagline(text, startClass) {
             tagEl.innerHTML = '';
-            for (let i = 0; i < text.length; i++) {
-                const span = document.createElement('span');
-                span.className = 'tl-char' + (startClass ? ' ' + startClass : '');
-                span.textContent = text[i] === ' ' ? '\u00a0' : text[i];
-                span.style.transitionDelay = (i * 18) + 'ms';
-                tagEl.appendChild(span);
-            }
+            const words = text.split(' ');
+            let charIndex = 0;
+            words.forEach((word, wi) => {
+                const wordWrap = document.createElement('span');
+                wordWrap.className = 'tl-word';
+                for (let i = 0; i < word.length; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'tl-char' + (startClass ? ' ' + startClass : '');
+                    span.textContent = word[i];
+                    span.style.transitionDelay = (charIndex * 18) + 'ms';
+                    wordWrap.appendChild(span);
+                    charIndex++;
+                }
+                tagEl.appendChild(wordWrap);
+                // Add space between words (regular space, allows line break here)
+                if (wi < words.length - 1) {
+                    const space = document.createElement('span');
+                    space.className = 'tl-char' + (startClass ? ' ' + startClass : '');
+                    space.innerHTML = '&nbsp;';
+                    space.style.transitionDelay = (charIndex * 18) + 'ms';
+                    tagEl.appendChild(space);
+                    charIndex++;
+                }
+            });
         }
 
         function showTagline() {
@@ -839,22 +871,55 @@
         });
 
         if (!isMobile) {
-            let hx = 0, hy = 0;
-            document.addEventListener('mousemove', e => { hx = e.clientX; hy = e.clientY; });
+            let hx = 0, hy = 0, hSpeed = 0, hpx = 0, hpy = 0;
+            const heatTrail = [];
+            document.addEventListener('mousemove', e => {
+                hSpeed = Math.hypot(e.clientX - hpx, e.clientY - hpy);
+                hpx = hx; hpy = hy;
+                hx = e.clientX; hy = e.clientY;
+                // Drop heat particles along the trail
+                const intensity = Math.min(hSpeed * 0.008, 0.4);
+                if (intensity > 0.01) {
+                    heatTrail.push({
+                        x: hx, y: hy,
+                        r: 30 + hSpeed * 0.8,
+                        a: intensity,
+                        life: 1.0,
+                        hue: Math.min(hSpeed * 0.3, 40) // faster = warmer color
+                    });
+                    // Limit trail length
+                    if (heatTrail.length > 80) heatTrail.shift();
+                }
+            });
 
             (function heatLoop() {
-                // Cool down: darken everything slightly each frame
-                hctx.fillStyle = 'rgba(0,0,0,0.008)';
+                // Clear with fade — fast enough to disappear in ~2 seconds
+                hctx.fillStyle = 'rgba(0,0,0,0.06)';
                 hctx.fillRect(0, 0, heatCanvas.width, heatCanvas.height);
 
-                // Warm up: paint at cursor
-                if (hx > 0) {
-                    const grad = hctx.createRadialGradient(hx, hy, 0, hx, hy, 80);
-                    grad.addColorStop(0, 'rgba(160,110,40,0.012)');
-                    grad.addColorStop(1, 'rgba(160,110,40,0)');
+                // Draw each heat particle with decay
+                for (let i = heatTrail.length - 1; i >= 0; i--) {
+                    const p = heatTrail[i];
+                    p.life -= 0.012;
+                    p.r += 0.3; // slowly expand
+
+                    if (p.life <= 0) {
+                        heatTrail.splice(i, 1);
+                        continue;
+                    }
+
+                    const alpha = p.a * p.life * p.life; // quadratic fade — fast at end
+                    const warm = p.hue;
+                    const grad = hctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+                    grad.addColorStop(0, `rgba(${180 + warm},${100 + warm * 0.5},40,${alpha})`);
+                    grad.addColorStop(0.4, `rgba(${160 + warm * 0.5},${90},30,${alpha * 0.4})`);
+                    grad.addColorStop(1, 'rgba(100,60,20,0)');
                     hctx.fillStyle = grad;
-                    hctx.fillRect(hx - 80, hy - 80, 160, 160);
+                    hctx.beginPath();
+                    hctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    hctx.fill();
                 }
+
                 requestAnimationFrame(heatLoop);
             })();
         }
