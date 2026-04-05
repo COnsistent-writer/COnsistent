@@ -870,45 +870,63 @@
             heatCanvas.height = window.innerHeight;
         });
 
-        if (!isMobile) {
+        {
             let hx = 0, hy = 0, hSpeed = 0, hpx = 0, hpy = 0;
             const heatTrail = [];
-            document.addEventListener('mousemove', e => {
-                hSpeed = Math.hypot(e.clientX - hpx, e.clientY - hpy);
-                hpx = hx; hpy = hy;
-                hx = e.clientX; hy = e.clientY;
-                // Drop heat particles along the trail
-                const intensity = Math.min(hSpeed * 0.008, 0.4);
+
+            function addHeat(x, y, speed) {
+                const intensity = Math.min(speed * 0.008, 0.4);
                 if (intensity > 0.01) {
                     heatTrail.push({
-                        x: hx, y: hy,
-                        r: 30 + hSpeed * 0.8,
+                        x: x, y: y,
+                        r: 30 + speed * 0.8,
                         a: intensity,
                         life: 1.0,
-                        hue: Math.min(hSpeed * 0.3, 40) // faster = warmer color
+                        hue: Math.min(speed * 0.3, 40)
                     });
-                    // Limit trail length
                     if (heatTrail.length > 80) heatTrail.shift();
                 }
-            });
+            }
+
+            // Desktop: mouse trail
+            if (!isMobile) {
+                document.addEventListener('mousemove', e => {
+                    hSpeed = Math.hypot(e.clientX - hpx, e.clientY - hpy);
+                    hpx = hx; hpy = hy;
+                    hx = e.clientX; hy = e.clientY;
+                    addHeat(hx, hy, hSpeed);
+                });
+            }
+
+            // Mobile: touch — glow where you touch and drag
+            document.addEventListener('touchstart', e => {
+                const t = e.touches[0];
+                hpx = t.clientX; hpy = t.clientY;
+                addHeat(t.clientX, t.clientY, 40); // initial touch = warm spot
+            }, { passive: true });
+
+            document.addEventListener('touchmove', e => {
+                const t = e.touches[0];
+                const speed = Math.hypot(t.clientX - hpx, t.clientY - hpy);
+                hpx = t.clientX; hpy = t.clientY;
+                addHeat(t.clientX, t.clientY, speed);
+            }, { passive: true });
 
             (function heatLoop() {
-                // Clear with fade — fast enough to disappear in ~2 seconds
                 hctx.fillStyle = 'rgba(0,0,0,0.06)';
                 hctx.fillRect(0, 0, heatCanvas.width, heatCanvas.height);
 
-                // Draw each heat particle with decay
                 for (let i = heatTrail.length - 1; i >= 0; i--) {
                     const p = heatTrail[i];
                     p.life -= 0.012;
-                    p.r += 0.3; // slowly expand
+                    p.r += 0.3;
 
                     if (p.life <= 0) {
                         heatTrail.splice(i, 1);
                         continue;
                     }
 
-                    const alpha = p.a * p.life * p.life; // quadratic fade — fast at end
+                    const alpha = p.a * p.life * p.life;
                     const warm = p.hue;
                     const grad = hctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
                     grad.addColorStop(0, `rgba(${180 + warm},${100 + warm * 0.5},40,${alpha})`);
