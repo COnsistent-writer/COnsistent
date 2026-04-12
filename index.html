@@ -33,19 +33,22 @@
 
         .bg-word {
             position: absolute; font-weight: 200;
-            letter-spacing: 0.12em; text-transform: uppercase;
+            letter-spacing: 0.15em; text-transform: uppercase;
             white-space: normal; max-width: 45vw;
             line-height: 1.4; pointer-events: all; cursor: default;
             opacity: 0;
-            transition: opacity 0.6s;
+            transition: color 0.4s, text-shadow 0.4s;
         }
 
         .bg-word:hover {
-            opacity: 0.55 !important;
+            filter: brightness(1.5) !important;
+            text-shadow: 0 0 15px currentColor;
+            transition: filter 0.3s, text-shadow 0.3s;
         }
 
         .bg-word.highlight {
-            opacity: 0.6 !important;
+            filter: brightness(1.6) !important;
+            text-shadow: 0 0 18px currentColor;
         }
 
         .vignette {
@@ -859,13 +862,14 @@
             }, { passive: true });
 
             (function heatLoop() {
-                hctx.fillStyle = 'rgba(0,0,0,0.06)';
+                // Fast fade — clears fully in ~1 second, never accumulates
+                hctx.fillStyle = 'rgba(0,0,0,0.12)';
                 hctx.fillRect(0, 0, heatCanvas.width, heatCanvas.height);
 
                 for (let i = heatTrail.length - 1; i >= 0; i--) {
                     const p = heatTrail[i];
-                    p.life -= 0.012;
-                    p.r += 0.3;
+                    p.life -= 0.025;
+                    p.r += 0.4;
 
                     if (p.life <= 0) {
                         heatTrail.splice(i, 1);
