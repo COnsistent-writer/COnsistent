@@ -712,9 +712,6 @@
             animateWord(el, 8, e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100);
         });
 
-        // Launch date — used in confirmation message
-        const LAUNCH = new Date('2027-09-13T00:00:00');
-
         // Formspree
         document.getElementById('subscribeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -729,9 +726,7 @@
                     body: JSON.stringify({ email })
                 });
                 if (res.ok) {
-                    const diff = LAUNCH - new Date();
-                    const days = Math.floor(diff / 86400000);
-                    msg.innerHTML = 'Mulțumim. Te anunțăm în <strong style="color:rgba(212,175,105,0.6)">' + days + ' zile</strong>.';
+                    msg.innerHTML = 'Mulțumim. <strong style="color:rgba(212,175,105,0.6)">Vei fi printre primii care află.</strong>';
                     document.getElementById('emailInput').value = '';
                 } else {
                     msg.textContent = 'Eroare. Încearcă din nou.';
